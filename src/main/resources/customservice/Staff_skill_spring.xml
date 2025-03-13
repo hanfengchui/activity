@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+<bean id="staffSkillDao"
+		class="com.timesontransfar.staffSkill.dao.impl.StaffSkillDaoImpl">
+		<property name="saveStaffSkillSql">
+			<value>
+				INSERT INTO
+				CC_STAFF_SKILL(GUID,STAFF_ID,STAFF_NAME,ORG_ID,ORG_NAME,FLOW_ORG_ID,FLOW_ORG_NAME,
+				SKILL_ID,SKILL_NAME,CREAT_STAFFiD,CREAT_DATA,TACHE_ID,SKILL_STATE,SERVICE_DATE)
+				VALUES(?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?)
+			</value>
+		</property>
+		<property name="updateStaffSkillSql">
+			<value>
+				UPDATE CC_STAFF_SKILL A SET A.SKILL_STATE=0 WHERE
+				A.STAFF_ID=?
+				AND A.FLOW_ORG_ID=? AND A.TACHE_ID=? AND A.SKILL_ID=? AND SERVICE_DATE = ? AND
+				A.SKILL_STATE=1
+			</value>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,18 @@
+---
+project_name: "common"
+local_file_path: "../../../../../../target/{{ project_name }}.jar"
+dest_file_path: "/install_jar/{{ platform_name }}_formal/{{ project_name }}/"
+file_path: "{{ dest_file_path }}" # 拷贝到指定目录下
+logs_path: "/install_jar/{{ platform_name }}_formal/{{ project_name }}.log"
+project_tag: "jscscctjar"
+project_ctyun: "jscscCTjar"
+project_tycomyun: "jscscTYjar"
+project_typrivateyun: "jscscPRjar"
+drflag: common
+
+javaagent: "-javaagent:{{ common.aiopsagent_path }} -Dpinpoint.agentId={{ exclusive_address }}-{{ common.port }} -Dpinpoint.applicationName={{ common.project_tag }}{{ common.name }}  -Dpinpoint.licence={{ common.licence }}"
+mysql_jdbcurl_config : ""
+mysql_pro_drflag_parameter: "'jdbc:mysql://173.16.12.46:8921/jscsc_ct_sheet?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull'"
+mysql_pre_drflag_parameter: "'jdbc:mysql://132.252.220.30:8921/jscsc_test_sheet?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull'"
+mysql_noc_drflag_parameter: "'jdbc:mysql://132.252.220.30:8921/jscsc_test_sheet?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull'"
+

@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="sheetQualitative" class="com.timesontransfar.customservice.worksheet.dao.impl.TsSheetQualitativeImpl">
+
+		<property name="queryOrderQuaSQL">
+			<value>
+			 SELECT C.TS_REASON_ID, C.TS_REASON_NAME,
+				C.DUTY_ORG_THIRD, C.DUTY_ORG_THIRD_DESC,
+				C.WORK_SHEET_ID,
+				C.CREAT_DATA,
+				C.TS_IF_BEING,
+				C.SATISFACTION_ID, C.SATISFACTION_DESC,
+				C.APPEND_CASES, C.CASES_ID, C.CASES_NAME,
+				C.FORCE_FLAG, C.FORCE_FLAG_DESC,
+				C.TS_KEY_WORD, C.TS_KEY_WORD_DESC, C.SUB_KEY_WORD, C.SUB_KEY_WORD_DESC,
+				C.THREE_GRADE_CATALOG, C.THREE_GRADE_CATALOG_DESC,
+				C.FOUR_GRADE_CATALOG, C.FOUR_GRADE_CATALOG_DESC,
+				C.FIVE_GRADE_CATALOG, C.FIVE_GRADE_CATALOG_DESC,
+				C.SIX_GRADE_CATALOG,C.SIX_GRADE_CATALOG_DISC,
+				C.CONTROL_AREA_FIR, C.CONTROL_AREA_FIR_DESC, C.CONTROL_AREA_SEC, C.CONTROL_AREA_SEC_DESC,
+				(SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = C.DUTY_ORG) 
+					AS FDUTY_ORG,
+				(SELECT P1.COL_VALUE_NAME FROM PUB_COLUMN_REFERENCE P1 WHERE P1.REFER_ID =
+					(SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = C.DUTY_ORG)) 
+					AS FDUTY_ORG_NAME, 
+				C.DUTY_ORG, C.DUTY_ORG_NAME,
+				(SELECT W.DEAL_CONTENT FROM CC_WORK_SHEET W WHERE W.WORK_SHEET_ID = C.WORK_SHEET_ID) 
+					AS DEAL_CONTENT, 
+				C.UNSATISFY_REASON, C.SYS_JUDGE,
+				C.LAST_DEAL_CONTENT,
+				C.PLUS_ONE, C.PLUS_ONE_DESC, C.PLUS_TWO, C.PLUS_TWO_DESC, 
+				C.OUTLETS_GUID, C.OUTLETS_NAME, C.OUTLETS_ADDRESS, C.OUTLETS_AR_CODE, C.CHANNEL_TP_NAME, C.OUTLETS_STAFF, C.OUTLETS_STAFF_ID,
+				C.CUST_ORDER_NBR, C.CREATE_CHANNEL_NAME, C.CREATE_STAFF_CODE, C.CREATE_STAFF_NAME,
+				C.ORDER_OPER_TYPE, C.ORDER_CREATE_DATE, C.ORDER_STATUS, C.OVERTIME_REASON_ID, C.OVERTIME_REASON_DESC, C.IS_REASONABLE, 
+				S.DEDUCTIONS_ID, S.DEDUCTIONS_NAME,O.CHANNEL_CLASSIFICATION,O.CHANNEL_DETAILS,O.CHANNEL_NAME,O.AGENT_NAME,
+				O.PRINCIPAL_DISTRICT,O.PRINCIPAL_LOCATION,O.PRINCIPAL_COUNTY,O.MARKET_NAME,O.MARKET_ID,O.MARKET_GRADE,
+				O.PRINCIPAL_DEPT,O.ADMIN_PRINCIPAL,O.CHANNEL_COUNTY,O.CHANNEL_PRINCIPAL,O.CHANNEL_LOCATION
+				FROM CC_SHEET_QUALITATIVE C LEFT JOIN CC_SHEET_OUTLETS S ON C.SERVICE_ORDER_ID = S.SERVICE_ORDER_ID
+				LEFT JOIN CC_ORDER_CHANNEL O ON O.SERVICE_ORDER_ID = C.SERVICE_ORDER_ID
+				WHERE C.SERVICE_ORDER_ID = ? ORDER BY C.CREAT_DATA
+			</value>
+		</property>
+		<property name="queryOrderQuaHisSQL">
+			<value>
+			 SELECT C.TS_REASON_ID, C.TS_REASON_NAME,
+				C.DUTY_ORG_THIRD, C.DUTY_ORG_THIRD_DESC,
+				C.WORK_SHEET_ID,
+				C.CREAT_DATA,
+				C.TS_IF_BEING,
+				C.SATISFACTION_ID, C.SATISFACTION_DESC,
+				C.APPEND_CASES, C.CASES_ID, C.CASES_NAME,
+				C.FORCE_FLAG, C.FORCE_FLAG_DESC,
+				C.TS_KEY_WORD, C.TS_KEY_WORD_DESC, C.SUB_KEY_WORD, C.SUB_KEY_WORD_DESC,
+				C.THREE_GRADE_CATALOG, C.THREE_GRADE_CATALOG_DESC,
+				C.FOUR_GRADE_CATALOG, C.FOUR_GRADE_CATALOG_DESC,
+				C.FIVE_GRADE_CATALOG, C.FIVE_GRADE_CATALOG_DESC,
+				C.SIX_GRADE_CATALOG,C.SIX_GRADE_CATALOG_DISC,
+				C.CONTROL_AREA_FIR, C.CONTROL_AREA_FIR_DESC, C.CONTROL_AREA_SEC, C.CONTROL_AREA_SEC_DESC,
+				(SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = C.DUTY_ORG) 
+					AS FDUTY_ORG,
+				(SELECT P1.COL_VALUE_NAME FROM PUB_COLUMN_REFERENCE P1 WHERE P1.REFER_ID =
+					(SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = C.DUTY_ORG)) 
+					AS FDUTY_ORG_NAME, 
+				C.DUTY_ORG, C.DUTY_ORG_NAME,
+				UNSATISFY_REASON, SYS_JUDGE,
+				LAST_DEAL_CONTENT,
+				PLUS_ONE, PLUS_ONE_DESC, PLUS_TWO, PLUS_TWO_DESC, 
+				OUTLETS_GUID, OUTLETS_NAME, OUTLETS_ADDRESS, OUTLETS_AR_CODE, CHANNEL_TP_NAME, OUTLETS_STAFF, OUTLETS_STAFF_ID,
+				CUST_ORDER_NBR, CREATE_CHANNEL_NAME, CREATE_STAFF_CODE, CREATE_STAFF_NAME,
+				ORDER_OPER_TYPE, ORDER_CREATE_DATE, ORDER_STATUS, OVERTIME_REASON_ID, OVERTIME_REASON_DESC, IS_REASONABLE
+				FROM CC_SHEET_QUALITATIVE_HIS C
+				WHERE C.SERVICE_ORDER_ID = ? ORDER BY C.CREAT_DATA
+			</value>
+		</property>
+		<property name="saveItsSheetQualitativeSql">
+			<value>
+				INSERT INTO CC_SHEET_QUALITATIVE ( SERVICE_ORDER_ID,
+				WORK_SHEET_ID , REGION_ID , REGION_NAME ,
+				PIGEONHOLE_SORT_ID ,
+				PIGEONHOLE_SORT_NAME , TS_REASON_ID
+				, TS_REASON_NAME , TS_IF_BEING ,
+				APPEND_CASES , CASES_ID
+				, CASES_NAME , CREAT_DATA , MONTH_FLAG
+				,TS_KEY_WORD , TS_KEY_WORD_DESC ,DUTY_ORG ,DUTY_ORG_NAME
+				, SUB_KEY_WORD , SUB_KEY_WORD_DESC
+				,THREE_GRADE_CATALOG
+				,THREE_GRADE_CATALOG_DESC
+				,FOUR_GRADE_CATALOG
+				,FOUR_GRADE_CATALOG_DESC
+				,FIVE_GRADE_CATALOG
+				,FIVE_GRADE_CATALOG_DESC,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DISC
+				,CONTROL_AREA_FIR
+				,CONTROL_AREA_FIR_DESC
+				,CONTROL_AREA_SEC
+				,CONTROL_AREA_SEC_DESC
+				,SATISFACTION_ID,SATISFACTION_DESC,
+				DUTY_ORG_THIRD, DUTY_ORG_THIRD_DESC,
+				FORCE_FLAG, FORCE_FLAG_DESC, UNSATISFY_REASON,
+				SYS_JUDGE, LAST_DEAL_CONTENT,
+				PLUS_ONE, PLUS_ONE_DESC, PLUS_TWO,
+				PLUS_TWO_DESC, OUTLETS_GUID, OUTLETS_NAME, OUTLETS_ADDRESS, OUTLETS_AR_CODE, CHANNEL_TP_NAME, OUTLETS_STAFF,
+				OUTLETS_STAFF_ID,CUST_ORDER_NBR, CREATE_CHANNEL_NAME, CREATE_STAFF_CODE, CREATE_STAFF_NAME,
+				ORDER_OPER_TYPE, ORDER_CREATE_DATE, ORDER_STATUS, OVERTIME_REASON_ID, OVERTIME_REASON_DESC, IS_REASONABLE
+				) VALUES (
+				?,?,?,?,?,?,?,?,?,?,?,?, NOW() , ? , ?, ?,
+				?, ?,?,?,?
+				,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="saveItsSheetQualitativeSqlHis">
+			<value>
+				INSERT INTO CC_SHEET_QUALITATIVE_HIS ( SERVICE_ORDER_ID,
+				WORK_SHEET_ID , REGION_ID , REGION_NAME ,
+				PIGEONHOLE_SORT_ID ,
+				PIGEONHOLE_SORT_NAME , TS_REASON_ID
+				, TS_REASON_NAME , TS_IF_BEING ,
+				APPEND_CASES , CASES_ID
+				, CASES_NAME , CREAT_DATA , MONTH_FLAG
+				, TS_KEY_WORD , TS_KEY_WORD_DESC ,DUTY_ORG ,DUTY_ORG_NAME
+				,
+				SUB_KEY_WORD , SUB_KEY_WORD_DESC
+				,THREE_GRADE_CATALOG
+				,THREE_GRADE_CATALOG_DESC
+				,FOUR_GRADE_CATALOG
+				,FOUR_GRADE_CATALOG_DESC
+				,FIVE_GRADE_CATALOG
+				,FIVE_GRADE_CATALOG_DESC,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DISC
+				,CONTROL_AREA_FIR
+				,CONTROL_AREA_FIR_DESC
+				,CONTROL_AREA_SEC
+				,CONTROL_AREA_SEC_DESC
+				,SATISFACTION_ID,SATISFACTION_DESC,
+				DUTY_ORG_THIRD, DUTY_ORG_THIRD_DESC,
+				FORCE_FLAG, FORCE_FLAG_DESC, UNSATISFY_REASON,
+				SYS_JUDGE, LAST_DEAL_CONTENT,
+				PLUS_ONE, PLUS_ONE_DESC, PLUS_TWO,
+				PLUS_TWO_DESC, OUTLETS_GUID, OUTLETS_NAME, OUTLETS_ADDRESS, OUTLETS_AR_CODE, CHANNEL_TP_NAME, OUTLETS_STAFF, OUTLETS_STAFF_ID,
+				CUST_ORDER_NBR, CREATE_CHANNEL_NAME, CREATE_STAFF_CODE, CREATE_STAFF_NAME,
+				ORDER_OPER_TYPE, ORDER_CREATE_DATE, ORDER_STATUS, OVERTIME_REASON_ID, OVERTIME_REASON_DESC, IS_REASONABLE
+				)
+				SELECT SERVICE_ORDER_ID, WORK_SHEET_ID , REGION_ID ,
+				REGION_NAME ,
+				PIGEONHOLE_SORT_ID , PIGEONHOLE_SORT_NAME
+				, TS_REASON_ID ,
+				TS_REASON_NAME , TS_IF_BEING ,
+				APPEND_CASES , CASES_ID , CASES_NAME ,
+				CREAT_DATA,MONTH_FLAG
+				, TS_KEY_WORD , TS_KEY_WORD_DESC ,DUTY_ORG ,DUTY_ORG_NAME
+				,
+				SUB_KEY_WORD , SUB_KEY_WORD_DESC
+				,THREE_GRADE_CATALOG
+				,THREE_GRADE_CATALOG_DESC
+				,FOUR_GRADE_CATALOG
+				,FOUR_GRADE_CATALOG_DESC
+				,FIVE_GRADE_CATALOG
+				,FIVE_GRADE_CATALOG_DESC,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DISC
+				,CONTROL_AREA_FIR
+				,CONTROL_AREA_FIR_DESC
+				,CONTROL_AREA_SEC
+				,CONTROL_AREA_SEC_DESC
+				,SATISFACTION_ID,SATISFACTION_DESC,
+				DUTY_ORG_THIRD, DUTY_ORG_THIRD_DESC,
+				FORCE_FLAG, FORCE_FLAG_DESC, UNSATISFY_REASON,
+				SYS_JUDGE, LAST_DEAL_CONTENT,
+				PLUS_ONE, PLUS_ONE_DESC, PLUS_TWO,
+				PLUS_TWO_DESC, OUTLETS_GUID, OUTLETS_NAME, OUTLETS_ADDRESS, OUTLETS_AR_CODE, CHANNEL_TP_NAME, OUTLETS_STAFF, OUTLETS_STAFF_ID,
+				CUST_ORDER_NBR, CREATE_CHANNEL_NAME, CREATE_STAFF_CODE, CREATE_STAFF_NAME,
+				ORDER_OPER_TYPE, ORDER_CREATE_DATE, ORDER_STATUS, OVERTIME_REASON_ID, OVERTIME_REASON_DESC, IS_REASONABLE
+				FROM CC_SHEET_QUALITATIVE WHERE
+				CC_SHEET_QUALITATIVE.SERVICE_ORDER_ID = ? AND
+				CC_SHEET_QUALITATIVE.REGION_ID = ?
+			</value>
+		</property>
+		<property name="deleteItsSheetQualitativeSql">
+			<value>
+				DELETE FROM CC_SHEET_QUALITATIVE WHERE SERVICE_ORDER_ID=? AND
+				REGION_ID= ?
+			</value>
+		</property>
+		<property name="insertSheetQualitativeGridSql">
+			<value>
+				INSERT INTO cc_sheet_qualitative_grid
+				  (service_order_id,
+				   create_staff,
+				   create_date,
+				   storeid_old,
+				   storenm_old,
+				   address_old,
+				   arcode_old,
+				   channeltpname_old,
+				   disputed_staff_type_old,
+				   disputed_staff_old,
+				   DISPUTED_STAFFNAME_OLD,
+				   control_area_old,
+				   control_area_desc_old,
+				   duty_org_old,
+				   duty_org_name_old,
+				   duty_org_third_old,
+				   duty_org_third_desc_old,
+				   storeid_new,
+				   storenm_new,
+				   address_new,
+				   arcode_new,
+				   channeltpname_new,
+				   disputed_staff_type_new,
+				   disputed_staff_new,
+				   DISPUTED_STAFFNAME_NEW,
+				   control_area_new,
+				   control_area_desc_new,
+				   duty_org_new,
+				   duty_org_name_new,
+				   duty_org_third_new,
+				   duty_org_third_desc_new,
+				   DEDUCTIONS_ID_OLD,
+				   DEDUCTIONS_NAME_OLD,
+				   DEDUCTIONS_ID_NEW,
+				   DEDUCTIONS_NAME_NEW)
+				VALUES
+				  (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="deleteSheetQualitativeGridSql">
+			<value>
+				DELETE FROM cc_sheet_qualitative_grid WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateOutletsSql">
+			<value>
+				update cc_sheet_outlets o set o.OUTLETS_GUID = ?,o.OUTLETS_NAME = ?,o.DEDUCTIONS_ID = ?,o.DEDUCTIONS_NAME = ?,
+				UPDATE_DATE = now(),OUTLETS_STAFF_ID = ?,OUTLETS_STAFF_NAME = ?
+				where o.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="HastenSheetInfoDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.HastenSheetInfoDaoImpl">
+		<property name="saveHastenSql">
+			<value>
+				INSERT INTO CC_HASTEN_SHEET (HASTEN_SHEET_GUID,
+				SERVICE_ORDER_ID, WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				CREAT_DATE,
+				SEND_ORG_NAME, SEND_ORG_ID, SEND_STAFF_NAME,
+				SEND_STAFF_ID,
+				HASTEN_REASON_ID, HASTEN_REASON_DESC,
+				HASTEN_INFO,MONTH_FLAG,valid_flag) VALUES (?, ?, ?, ?, ?, NOW(),
+				?, ?, ?, ?, ?, ?, ?,?,?)
+			</value>
+		</property>
+		<property name="saveHatenHis">
+			<value>
+				INSERT INTO CC_HASTEN_SHEET_HIS (HASTEN_SHEET_GUID,
+				SERVICE_ORDER_ID, WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				CREAT_DATE,
+				SEND_ORG_NAME, SEND_ORG_ID, SEND_STAFF_NAME,
+				SEND_STAFF_ID,
+				HASTEN_REASON_ID, HASTEN_REASON_DESC,
+				HASTEN_INFO,MONTH_FLAG,valid_flag) SELECT * FROM CC_HASTEN_SHEET H
+				WHERE H.SERVICE_ORDER_ID=? AND H.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="quryHastenSql">
+			<value>
+				SELECT * FROM CC_HASTEN_SHEET H WHERE H.WORK_SHEET_ID=?
+			</value>
+		</property>
+		<property name="quryHastenHis">
+			<value>
+				SELECT * FROM CC_HASTEN_SHEET_HIS H WHERE
+				H.WORK_SHEET_ID=?
+			</value>
+		</property>
+		<property name="orderHastenSqlHis">
+			<value>
+				SELECT * FROM CC_HASTEN_SHEET_HIS H WHERE
+				H.SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="orderHastenSql">
+			<value>
+				SELECT * FROM CC_HASTEN_SHEET H WHERE
+				H.SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="deleHastenSql">
+			<value>
+				DELETE FROM CC_HASTEN_SHEET WHERE SERVICE_ORDER_ID=? AND
+				MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="workSheetSql">
+			<value>
+				SELECT DISTINCT H.SERVICE_ORDER_ID FROM CC_HASTEN_SHEET
+				H,
+				CC_WORK_SHEET W, CC_SERVICE_ORDER_ASK S, TRM_REGION
+				R,
+				CC_SERVICE_CONTENT_ASK C WHERE H.REGION_ID =
+				W.REGION_ID AND
+				H.WORK_SHEET_ID = W.WORK_SHEET_ID AND
+				W.REGION_ID = R.REGION_ID AND
+				S.REGION_ID = W.REGION_ID
+				AND S.SERVICE_ORDER_ID = W.SERVICE_ORDER_ID
+				AND
+				C.REGION_ID = W.REGION_ID AND S.SERVICE_ORDER_ID =
+				C.SERVICE_ORDER_ID AND W.TACHE_ID = ?
+			</value>
+		</property>
+		<property name="updateRegion">
+			<value>UPDATE CC_HASTEN_SHEET S SET S.REGION_ID = ? ,S.REGION_NAME =
+				? WHERE S.SERVICE_ORDER_ID = ? AND S.REGION_ID = ?</value>
+		</property>
+		<property name="tyxrwSql">
+			<value>
+				SELECT A.SERVICE_ORDER_ID, DEAL_STAFF
+				FROM cc_service_order_ask a, cc_service_content_ask b, cc_work_sheet c
+				WHERE a.service_order_id = b.service_order_id
+				AND a.service_order_id = c.service_order_id
+				AND a.service_type = 700001171
+				AND appeal_reason_desc = '天翼新入网'
+				AND lock_flag = 1
+			</value>
+		</property>
+		<property name="cdtxSql">
+			<value>
+				SELECT A.SERVICE_ORDER_ID, DEAL_STAFF
+				  FROM cc_service_order_ask a, cc_service_content_ask b, cc_work_sheet c
+				 WHERE a.service_order_id = b.service_order_id
+				   AND a.service_order_id = c.service_order_id
+				   AND a.service_date = 3
+				   AND lock_flag = 1
+			</value>
+		</property>
+	</bean>
+
+
+	<bean id="iworkSchemaDao" class="com.timesontransfar.customservice.workFlowOrg.dao.impl.WorkSheetSchemaDaoImpl">
+		<property name="getWorkSchemaSql">
+			<value>
+				SELECT * FROM TSP_WORKSHEET_SCHEMA A WHERE A.TACHE_ID=?
+				AND
+				A.WORKSHEET_TYPE=?
+			</value>
+		</property>
+		<property name="saveSchemaobjSql">
+			<value>
+				INSERT INTO
+				TSP_WORKSHEET_SCHEMA(WORKSHEET_SCHEMA_ID,WFL_ID,WFL_SEQ_NBR,TACHE_ID,WORKSHEET_TYPE,
+				WORKSHEET_CATEGORY,FLOW_OPT_METHOD,FLOW_OPT_PARAM,SEND_XML_SCHEMA,
+				RECEIVE_XML_SCHEMA,PROD_CONFIG_FLAG,REVERSE_WORKSHEET_SCHEMA_ID)
+				VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+	</bean>
+
+	<bean id="iworkRuleDao" class="com.timesontransfar.customservice.workFlowOrg.dao.impl.WorkSheetRuleDaoImpl">
+		<property name="quryFlowRuleSql">
+			<value>
+				SELECT B.* FROM TSP_WORKSHEET_RULE_RELA
+				A,TSP_WORKSHEET_RULE B
+				WHERE A.RULE_ID = B.RULE_ID AND
+				A.WORKSHEET_SCHEMA_ID=?
+			</value>
+		</property>
+		<property name="saveRuleObjSql">
+			<value>
+				INSERT INTO
+				TSP_WORKSHEET_RULE(RULE_ID,RULE_NAME,RULE_DESC,RULE_TYPE,PKG_EFF_DATE,PKG_EXP_DATE)
+				VALUES(?,?,?,?,NOW(),NOW())
+			</value>
+		</property>
+		<property name="saveRuleSchemaRealSql">
+			<value>
+				INSERT INTO
+				TSP_WORKSHEET_RULE_RELA(RULE_ID,WORKSHEET_SCHEMA_ID)VALUES(?,?)
+			</value>
+		</property>
+	</bean>
+
+	<bean id="iworkFlowOrgDao"
+		class="com.timesontransfar.customservice.workFlowOrg.dao.impl.WorkSheetFlowOrgDaoImpl">
+		<property name="quryFlowOrgListSql">
+			<value>
+				SELECT * FROM TSP_WORKSHEET_FLOW A WHERE
+				A.WORKSHEET_SCHEMA_ID=? AND A.TACHE_ID=? AND
+				A.REGION_ID=? AND
+				A.RULE_ID=?
+			</value>
+		</property>
+		<property name="saveFlowOrgsql">
+			<value>
+				INSERT INTO TSP_WORKSHEET_FLOW
+				(WS_FLOW_RULE_ID,WS_NBR,WORKSHEET_SCHEMA_ID,REGION_ID,RULE_ID,ITEM_ID,ITEM_VALUE,FLOW_ORG_ID,TACHE_ID)
+				VALUES(?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+	</bean>
+
+	<bean id="iworkIremDao" class="com.timesontransfar.customservice.workFlowOrg.dao.impl.WorkSheetItmeDao">
+		<property name="saveItmeSql">
+			<value>
+				INSERT INTO
+				TSP_WORKSHEET_RULE_ITEM(ITEM_ID,ITEM_NAME,ITEM_DESC,ENTITY_ID,ATTRIBUTE_ID)VALUES(?,?,?,?,?)
+			</value>
+		</property>
+		<property name="saveRuleItmeRealSql">
+			<value>
+				INSERT INTO
+				TSP_WORKSHEET_RULE_ITEM_RELA(RULE_ID,ITEM_ID)
+				VALUES(?,?)
+			</value>
+		</property>
+	</bean>
+
+	<bean id="sheetMistakeDAO" class="com.timesontransfar.customservice.worksheet.dao.impl.SheetMistakeDAOImpl">
+		<property name="insertOrderMistakeSql">
+			<value>
+				INSERT INTO cc_order_mistake
+				  (service_order_id,
+				   work_sheet_id,
+				   mistake_org_id,
+				   mistake_staff_id,
+				   mistake_type,
+				   check_org_id,
+				   check_staff_id,
+				   old_info,
+				   new_info,
+				   create_date)
+				VALUES
+				  (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+			</value>
+		</property>
+		<property name="deleteOrderMistakeByOrderIdSql">
+			<value>
+				DELETE FROM cc_order_mistake WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectOrderMistakeByOrderIdSql">
+			<value>
+				SELECT SERVICE_ORDER_ID,
+				       WORK_SHEET_ID,
+				       MISTAKE_ORG_ID,
+				       MISTAKE_STAFF_ID,
+				       MISTAKE_TYPE,
+				       CHECK_ORG_ID,
+				       CHECK_STAFF_ID,
+				       OLD_INFO,
+				       NEW_INFO,
+				       DATE_FORMAT(CREATE_DATE, '%Y-%m-%d %H:%i:%s') CREATE_DATE
+				  FROM cc_order_mistake
+				 WHERE service_order_id = ?
+				   AND mistake_type = ?
+				 ORDER BY create_date DESC
+			</value>
+		</property>
+		<property name="insertOrderMistakeHisByOrderIdSql">
+			<value>
+				INSERT INTO cc_order_mistake_his
+				  (service_order_id,
+				   work_sheet_id,
+				   mistake_org_id,
+				   mistake_staff_id,
+				   mistake_type,
+				   check_org_id,
+				   check_staff_id,
+				   old_info,
+				   new_info,
+				   create_date)
+				  SELECT service_order_id,
+				         work_sheet_id,
+				         mistake_org_id,
+				         mistake_staff_id,
+				         mistake_type,
+				         check_org_id,
+				         check_staff_id,
+				         old_info,
+				         new_info,
+				         create_date
+				    FROM cc_order_mistake
+				   WHERE service_order_id = ?
+			</value>
+		</property>
+	</bean>
+</beans>

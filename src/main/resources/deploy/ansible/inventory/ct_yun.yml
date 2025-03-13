@@ -1,0 +1,129 @@
+---
+all:
+  hosts:
+    cf41.ct:
+      ansible_host: 172.16.183.41
+    cf42.ct:
+      ansible_host: 172.16.183.42
+    cf43.ct:
+      ansible_host: 172.16.183.43
+    cf44.ct:
+      ansible_host: 172.16.183.44
+    cf45.ct:
+      ansible_host: 172.16.183.45
+    cf46.ct:
+      ansible_host: 172.16.183.46
+    cf47.ct:
+      ansible_host: 172.16.183.47
+    cf48.ct:
+      ansible_host: 172.16.183.48
+    cf49.ct:
+      ansible_host: 172.16.183.49
+    cf50.ct:
+      ansible_host: 172.16.183.50
+    cf51.ct:
+      ansible_host: 172.16.183.51
+    cf52.ct:
+      ansible_host: 172.16.183.52
+    cf56.ct:
+      ansible_host: 172.16.183.56
+    cf57.ct:
+      ansible_host: 172.16.183.57
+    cf58.ct:
+      ansible_host: 172.16.183.58
+    cf59.ct:
+      ansible_host: 172.16.183.59
+    cf60.ct:
+      ansible_host: 172.16.183.60
+    cf61.ct:
+      ansible_host: 172.16.183.61
+    cf64.ct:
+      ansible_host: 172.16.183.64
+    cf65.ct:
+      ansible_host: 172.16.183.65
+    cf66.ct:
+      ansible_host: 172.16.183.66
+    cf67.ct:
+      ansible_host: 172.16.183.67
+    cf68.ct:
+      ansible_host: 172.16.183.68
+    cf69.ct:
+      ansible_host: 172.16.183.69
+    cf74.ct:
+      ansible_host: 172.16.183.74
+    cf75.ct:
+      ansible_host: 172.16.183.75
+    cf76.ct:
+      ansible_host: 172.16.183.76
+    cf77.ct:
+      ansible_host: 172.16.183.77
+    cf78.ct:
+      ansible_host: 172.16.183.78
+    cf79.ct:
+      ansible_host: 172.16.183.79
+    cf81.ct:
+      ansible_host: 172.16.183.81
+    cf82.ct:
+      ansible_host: 172.16.183.82
+    cf83.ct:
+      ansible_host: 172.16.183.83
+    cf84.ct:
+      ansible_host: 172.16.183.84
+    cf85.ct:
+      ansible_host: 172.16.183.85
+    cf86.ct:
+      ansible_host: 172.16.183.86
+    cf87.ct:
+      ansible_host: 172.16.183.87
+    cf88.ct:
+      ansible_host: 172.16.183.88
+    cf89.ct:
+      ansible_host: 172.16.183.89
+    cf90.ct:
+      ansible_host: 172.16.183.90
+    cf91.ct:
+      ansible_host: 172.16.183.91
+  children:
+    ct_yun:
+      hosts:
+        cf41.ct:
+        cf42.ct:
+        cf43.ct:
+        cf44.ct:
+        cf45.ct:
+        cf46.ct:
+        cf47.ct:
+        cf48.ct:
+        cf49.ct:
+        cf50.ct:
+        cf51.ct:
+        cf52.ct:
+        cf56.ct:
+        cf57.ct:
+        cf58.ct:
+        cf59.ct:
+        cf60.ct:
+        cf61.ct:
+        cf64.ct:
+        cf65.ct:
+        cf66.ct:
+        cf67.ct:
+        cf68.ct:
+        cf69.ct:
+        cf74.ct:
+        cf75.ct:
+        cf76.ct:
+        cf77.ct:
+        cf78.ct:
+        cf79.ct:
+        cf81.ct:
+        cf82.ct:
+        cf83.ct:
+        cf84.ct:
+        cf85.ct:
+        cf86.ct:
+        cf87.ct:
+        cf88.ct:
+        cf89.ct:
+        cf90.ct:
+        cf91.ct:

@@ -1,0 +1,28 @@
+---
+- name: check filePath.
+  fail:
+    msg: "filePath is not empty."
+  when: local_file_path == "" or dest_file_path == ""
+
+- name: mkdir file list
+  become: yes
+  become_method: su
+  file:
+    path: "{{ item }}"
+    owner: vmuser
+    group: vmuser
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ dest_file_path }}"
+
+#- name: stopped firewalld
+#  become: yes
+#  become_method: su
+#  systemd:
+#    name: firewalld
+#    state: stopped
+#    enabled: yes
+#    daemon_reload: yes
+
+- debug: msg="init done"

@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="SheetActionInfoDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.SheetActionInfoDaoImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="pubFunc">
+			<ref bean="pubFunc"/>
+		</property>
+		<property name="sheetPubInfoDao">
+			<ref bean="sheetPubInfoDao" />
+		</property>
+		<property name="delSheetActionInfoSql">
+			<value>
+				DELETE FROM CC_SHEET_FLOW_ACTION WHERE WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="querySheetActionBySheetIdSql">
+			<value>
+				SELECT T.ACTION_RECORD_GUID, T.WORK_SHEET_ID,
+				T.TACHE_ID, T.TACHE_NAME, T.ACTION_CODE, T.ACTION_NAME,
+				T.OPRA_ORG_ID, T.OPRA_ORG_NAME, T.OPRA_STAFF,
+				T.OPRA_STAFF_NAME, DATE_FORMAT(T.OPRA_START_DATE,
+				'%Y-%m-%d %H:%i:%s') as OPRA_START_DATE,
+				DATE_FORMAT(T.OPRA_END_DATE, '%Y-%m-%d %H:%i:%s') as
+				OPRA_END_DATE, T.OPRA_COMMENTS, T.REGION_ID,
+				T.SERVICE_ORDER_ID, T.MONTH_FLAG FROM
+				CC_SHEET_FLOW_ACTION T WHERE T.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="querySheetActionHisBySheetIdSql">
+			<value>
+				SELECT T.ACTION_RECORD_GUID, T.WORK_SHEET_ID,
+				T.TACHE_ID, T.TACHE_NAME, T.ACTION_CODE, T.ACTION_NAME,
+				T.OPRA_ORG_ID, T.OPRA_ORG_NAME, T.OPRA_STAFF,
+				T.OPRA_STAFF_NAME, DATE_FORMAT(T.OPRA_START_DATE,
+				'%Y-%m-%d %H:%i:%s') as OPRA_START_DATE,
+				DATE_FORMAT(T.OPRA_END_DATE, '%Y-%m-%d %H:%i:%s') as
+				OPRA_END_DATE, T.OPRA_COMMENTS, T.REGION_ID,
+				T.SERVICE_ORDER_ID, T.MONTH_FLAG FROM
+				CC_SHEET_FLOW_ACTION_HIS T WHERE T.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="saveSheetActionSql">
+			<value>
+				INSERT INTO CC_SHEET_FLOW_ACTION (ACTION_RECORD_GUID,
+				WORK_SHEET_ID, TACHE_ID, TACHE_NAME, ACTION_CODE,
+				ACTION_NAME, OPRA_ORG_ID, OPRA_ORG_NAME, OPRA_STAFF,
+				OPRA_STAFF_NAME, OPRA_START_DATE, OPRA_END_DATE,
+				OPRA_COMMENTS, REGION_ID, SERVICE_ORDER_ID, MONTH_FLAG)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?,
+				?, ?)
+			</value>
+		</property>
+		<property name="savaSheetActionHisSql">
+			<value>
+				INSERT INTO CC_SHEET_FLOW_ACTION_HIS
+				(ACTION_RECORD_GUID, WORK_SHEET_ID, TACHE_ID,
+				TACHE_NAME, ACTION_CODE, ACTION_NAME, OPRA_ORG_ID,
+				OPRA_ORG_NAME, OPRA_STAFF, OPRA_STAFF_NAME,
+				OPRA_START_DATE, OPRA_END_DATE, OPRA_COMMENTS,
+				REGION_ID, SERVICE_ORDER_ID, MONTH_FLAG)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?,
+				?, ?)
+			</value>
+		</property>
+		<property name="saveSheetActionHisByOrderIdSql">
+			<value>
+				INSERT INTO CC_SHEET_FLOW_ACTION_HIS (
+				ACTION_RECORD_GUID, WORK_SHEET_ID, TACHE_ID, TACHE_NAME,
+				ACTION_CODE, ACTION_NAME, OPRA_ORG_ID, OPRA_ORG_NAME,
+				OPRA_STAFF, OPRA_STAFF_NAME, OPRA_START_DATE,
+				OPRA_END_DATE, OPRA_COMMENTS, REGION_ID,
+				SERVICE_ORDER_ID, MONTH_FLAG ) SELECT
+				CC_SHEET_FLOW_ACTION.ACTION_RECORD_GUID ,
+				CC_SHEET_FLOW_ACTION.WORK_SHEET_ID,
+				CC_SHEET_FLOW_ACTION.TACHE_ID,
+				CC_SHEET_FLOW_ACTION.TACHE_NAME,
+				CC_SHEET_FLOW_ACTION.ACTION_CODE,
+				CC_SHEET_FLOW_ACTION.ACTION_NAME,
+				CC_SHEET_FLOW_ACTION.OPRA_ORG_ID,
+				CC_SHEET_FLOW_ACTION.OPRA_ORG_NAME,
+				CC_SHEET_FLOW_ACTION.OPRA_STAFF,
+				CC_SHEET_FLOW_ACTION.OPRA_STAFF_NAME,
+				CC_SHEET_FLOW_ACTION.OPRA_START_DATE,
+				CC_SHEET_FLOW_ACTION.OPRA_END_DATE,
+				CC_SHEET_FLOW_ACTION.OPRA_COMMENTS,
+				CC_SHEET_FLOW_ACTION.REGION_ID,
+				CC_SHEET_FLOW_ACTION.SERVICE_ORDER_ID,
+				CC_SHEET_FLOW_ACTION.MONTH_FLAG FROM
+				CC_SHEET_FLOW_ACTION WHERE
+				CC_SHEET_FLOW_ACTION.SERVICE_ORDER_ID = ? AND
+				CC_SHEET_FLOW_ACTION.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="delSheetActionByOrderIdSql">
+			<value>
+				DELETE FROM CC_SHEET_FLOW_ACTION WHERE
+				SERVICE_ORDER_ID = ? AND MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="updateRegion">
+			<value>UPDATE CC_SHEET_FLOW_ACTION S SET S.REGION_ID = ? WHERE S.SERVICE_ORDER_ID = ? AND S.REGION_ID = ?</value>
+		</property>
+		<property name="queryLastActionCodeBySheetIdSql">
+			<value>
+				SELECT ACTION_CODE
+				  FROM cc_sheet_flow_action
+				 WHERE action_code IN (700000072, 700001828)
+				   AND work_sheet_id = ?
+				 ORDER BY opra_start_date DESC
+			</value>
+		</property>
+		<property name="saveSheetHiddenActionSql">
+			<value>
+				INSERT INTO cc_sheet_hidden_action
+				  (work_sheet_id, service_order_id, opra_staff, opra_date, end_date, hidden_state)
+				VALUES
+				  (?, ?, ?, NOW(), str_to_date(?, '%Y-%m-%d'), 0)
+			</value>
+		</property>
+		<property name="queryHiddenListByOpraStaffSql">
+			<value>
+				SELECT A.SERVICE_ORDER_ID,
+				       D.WORK_SHEET_ID,
+				       A.PROD_NUM,
+				       DATE_FORMAT(ACCEPT_DATE, '%Y-%m-%d %H:%i:%s') ACCEPT_DATE,
+				       DATE_FORMAT(LOCK_DATE, '%Y-%m-%d %H:%i:%s') LOCK_DATE,
+				       ACCEPT_COME_FROM_DESC,
+				       DATE_FORMAT(OPRA_DATE, '%Y-%m-%d %H:%i:%s') OPRA_DATE,
+				       DATE_FORMAT(END_DATE, '%Y-%m-%d') END_DATE,
+				       SHEET_STATU_DESC,
+				       (SELECT COUNT(1) FROM CC_HASTEN_SHEET F WHERE F.SERVICE_ORDER_ID = A.SERVICE_ORDER_ID) HASTENT_NUM,
+				       ACCEPT_COUNT,
+				       SHEET_TYPE_DESC,
+				       URGENCY_GRADE_DESC,
+				       A.SERVICE_TYPE_DESC,
+				       APPEAL_PROD_NAME,
+				       CUST_SERV_GRADE_NAME,
+				       A.REGION_NAME,
+				       OPRA_STAFF
+				  FROM CC_SERVICE_ORDER_ASK A, CC_SERVICE_CONTENT_ASK B, CC_ORDER_CUST_INFO C, CC_WORK_SHEET D, CC_SHEET_HIDDEN_ACTION E
+				 WHERE A.SERVICE_ORDER_ID = B.SERVICE_ORDER_ID
+				   AND A.CUST_GUID = C.CUST_GUID
+				   AND A.SERVICE_ORDER_ID = D.SERVICE_ORDER_ID
+				   AND D.WORK_SHEET_ID = E.WORK_SHEET_ID
+				   AND HIDDEN_STATE = 0
+			</value>
+		</property>
+		<property name="updateSheetHiddenActionStateBySheetIdSql">
+			<value>
+				UPDATE cc_sheet_hidden_action SET hidden_state = ? WHERE hidden_state = 0 AND work_sheet_id = ?
+			</value>
+		</property>
+		<property name="saveSheetHiddenActionHisByOrderIdSql">
+			<value>
+				INSERT INTO cc_sheet_hidden_action_his
+				  (work_sheet_id, service_order_id, opra_staff, opra_date, end_date, hidden_state)
+				  SELECT work_sheet_id, service_order_id, opra_staff, opra_date, end_date, hidden_state FROM cc_sheet_hidden_action WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="delSheetHiddenActionHisByOrderIdSql">
+			<value>
+				DELETE FROM cc_sheet_hidden_action WHERE service_order_id = ?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="sheetPubInfoDao"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.SheetPubInfoDaoImpl">
+		<property name="saveSheetPubInfoSql">
+			<value>
+				INSERT INTO CC_WORK_SHEET (WORK_SHEET_ID,
+				SERVICE_ORDER_ID, REGION_ID, REGION_NAME, SERVICE_TYPE,
+				SERVICE_TYPE_DESC, CREAT_DATE, SHEET_RECEIVE_DATE,
+				RECEIVE_ORG_ID, RECEIVE_ORG_NAME, RECEIVE_STAFF,
+				RECEIVE_STAFF_NAME, DEAL_REQUIRE, RESPOND_DATE,
+				DEAL_STAFF, DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME,
+				RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID,
+				RETURN_ORG_NAME, SOURCE_SHEET_ID, SHEET_STATU,
+				STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID,
+				WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID,
+				LOCK_FLAG, LOCK_DATE, SHEET_PRI_VALUE,
+				HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC,
+				TACHE_DESC, PRE_ALARM_VALUE,ALARM_VALUE,AUTO_VISIT_FLAG,
+				PRECONTRACT_SIGN,MONTH_FLAG,RECEIVE_ORG_DISPLAY,DEAL_DESC,DEAL_CONTENT,MAIN_SHEET_FLAG,RECEIVE_REGION_ID,RECEIVE_REGION_NAME,
+				HASTENT_NUM,SHEET_TYPE_DESC,STATIONLIMINT,DISTILL_DATE,DEAL_ID				
+				, REPORT_NUM ,NEST_TACHE ,FLOW_SEQUENCE,PRECONTRACT_FLAG,PRECONTRACT_DATE 
+				,HOME_SHEET
+				)
+				VALUES (?, ?, ?, ?, ?, ?, NOW(), 
+				str_to_date(?, '%Y-%m-%d %H:%i:%s'), ?, ?, ?, ?, ?, 
+				str_to_date(?, '%Y-%m-%d %H:%i:%s'), 
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+				str_to_date(?, '%Y-%m-%d %H:%i:%s'), ?, ?, ?, ?, ?, ?,
+				?, NOW(), ?, ?, ?, ?, ?, ?,
+				?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),? , ? ,? , ?,?,str_to_date(?, '%Y-%m-%d %H:%i:%s')
+				,?
+				)
+			</value>
+		</property>
+		<property name="saveSheetPubInfoHisSql">
+			<value> 
+				INSERT INTO  CC_WORK_SHEET_HIS
+			   (WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID, REGION_NAME, SERVICE_TYPE, 
+			   SERVICE_TYPE_DESC, CREAT_DATE, SHEET_RECEIVE_DATE, RECEIVE_ORG_ID, RECEIVE_ORG_NAME, 
+			   RECEIVE_STAFF, RECEIVE_STAFF_NAME, DEAL_REQUIRE, RESPOND_DATE, DEAL_STAFF, DEAL_STAFF_NAME,
+			    DEAL_ORG_ID, DEAL_ORG_NAME, RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID, RETURN_ORG_NAME, 
+			    SOURCE_SHEET_ID, SHEET_STATU, STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID, WFL_INST_ID, 
+			    WORKSHEET_SCHEMA_ID, TACHE_INST_ID, LOCK_FLAG, LOCK_DATE, SHEET_PRI_VALUE, HANGUP_START_TIME,
+			     HANGUP_TIME_COUNT, SHEET_STATU_DESC, TACHE_DESC, PRE_ALARM_VALUE, ALARM_VALUE, AUTO_VISIT_FLAG, 
+			     PRECONTRACT_DATE, PRECONTRACT_SIGN, SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY, DEAL_DESC, 
+			     DEAL_CONTENT, MAIN_SHEET_FLAG, RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM, SHEET_TYPE_DESC, 
+			     STATIONLIMINT, DISTILL_DATE, DEAL_ID, REPORT_NUM, NEST_TACHE, FLOW_SEQUENCE, PRECONTRACT_FLAG ,HOME_SHEET,LAST_XC_SHEET_ID) 
+			     
+			 SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID, REGION_NAME, SERVICE_TYPE, SERVICE_TYPE_DESC, 
+			CREAT_DATE, SHEET_RECEIVE_DATE, RECEIVE_ORG_ID, RECEIVE_ORG_NAME, RECEIVE_STAFF, RECEIVE_STAFF_NAME, 
+			DEAL_REQUIRE, RESPOND_DATE, DEAL_STAFF, DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME, RETURN_STAFF,
+			 RETURN_STAFF_NAME, RETURN_ORG_ID, RETURN_ORG_NAME, SOURCE_SHEET_ID, SHEET_STATU, STATU_DATE, SHEET_TYPE, 
+			 DEAL_LIMIT_TIME, TACHE_ID, WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID, LOCK_FLAG, LOCK_DATE, 
+			 SHEET_PRI_VALUE, HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC, TACHE_DESC, PRE_ALARM_VALUE,
+			  ALARM_VALUE, AUTO_VISIT_FLAG, PRECONTRACT_DATE, PRECONTRACT_SIGN, SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY,
+			   DEAL_DESC, DEAL_CONTENT, MAIN_SHEET_FLAG, RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM, SHEET_TYPE_DESC, 
+			   STATIONLIMINT, DISTILL_DATE, DEAL_ID, REPORT_NUM, NEST_TACHE, FLOW_SEQUENCE, PRECONTRACT_FLAG ,HOME_SHEET,LAST_XC_SHEET_ID
+			   FROM CC_WORK_SHEET  WHERE CC_WORK_SHEET.SERVICE_ORDER_ID =? AND CC_WORK_SHEET.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="saveErrorSheetSql">
+			<value>
+			INSERT INTO CC_WORK_SHEET(
+         SHEET_TYPE,SHEET_TYPE_DESC,
+         WORK_SHEET_ID,SERVICE_ORDER_ID,
+         SHEET_STATU,SHEET_STATU_DESC,
+         DEAL_STAFF,DEAL_STAFF_NAME,DEAL_ORG_ID,DEAL_ORG_NAME,
+         RECEIVE_STAFF,RECEIVE_STAFF_NAME,RECEIVE_ORG_ID,RECEIVE_ORG_NAME,
+         RETURN_STAFF,RETURN_STAFF_NAME,RETURN_ORG_ID,RETURN_ORG_NAME,
+         DEAL_DESC,STATU_DATE,
+         DEAL_CONTENT,SAVE_DEALCONTEN,
+         CREAT_DATE,
+         SHEET_PRI_VALUE,
+         REGION_ID,
+         REGION_NAME,
+         SERVICE_TYPE,
+         SERVICE_TYPE_DESC,
+         SHEET_RECEIVE_DATE,
+         RESPOND_DATE,
+         SOURCE_SHEET_ID,
+         DEAL_LIMIT_TIME,
+         TACHE_ID,
+         WFL_INST_ID,
+         WORKSHEET_SCHEMA_ID,
+         TACHE_INST_ID,
+         LOCK_FLAG,
+         LOCK_DATE,
+         HANGUP_START_TIME,
+         HANGUP_TIME_COUNT,
+         TACHE_DESC,
+         PRE_ALARM_VALUE,
+         ALARM_VALUE,
+         AUTO_VISIT_FLAG,
+         PRECONTRACT_DATE,
+         PRECONTRACT_SIGN,
+         DEAL_REQUIRE,
+         MONTH_FLAG,
+         RECEIVE_ORG_DISPLAY,
+         MAIN_SHEET_FLAG,
+         RECEIVE_REGION_ID,
+         RECEIVE_REGION_NAME,
+         HASTENT_NUM,
+         STATIONLIMINT,
+         DISTILL_DATE,
+         DEAL_ID,
+         REPORT_NUM ,
+         NEST_TACHE ,FLOW_SEQUENCE,HOME_SHEET,LAST_XC_SHEET_ID
+         )
+         SELECT
+               ?,?,?,?,?,?,?,?,?,?,
+               ?,?,?,?,?,?,?,?,?,STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s'),
+               ?,?,
+               NOW(),?,
+               REGION_ID,
+               REGION_NAME,
+               SERVICE_TYPE,
+               SERVICE_TYPE_DESC,
+               SHEET_RECEIVE_DATE,
+               RESPOND_DATE,
+               ?,
+               DEAL_LIMIT_TIME,
+               TACHE_ID,
+               WFL_INST_ID,
+               WORKSHEET_SCHEMA_ID,
+               TACHE_INST_ID,
+               LOCK_FLAG,
+               NOW(),               
+               null,
+               0,
+               TACHE_DESC,
+               PRE_ALARM_VALUE,
+               ALARM_VALUE,
+               AUTO_VISIT_FLAG,
+               PRECONTRACT_DATE,
+               PRECONTRACT_SIGN,
+               null,
+               MONTH_FLAG,
+               RECEIVE_ORG_DISPLAY,
+               MAIN_SHEET_FLAG,
+               RECEIVE_REGION_ID,
+               RECEIVE_REGION_NAME,
+               HASTENT_NUM,
+               STATIONLIMINT,
+               NOW(),
+               DEAL_ID,
+               ?,
+               NEST_TACHE,FLOW_SEQUENCE,?,LAST_XC_SHEET_ID
+          FROM CC_WORK_SHEET
+         WHERE CC_WORK_SHEET.WORK_SHEET_ID = ?
+           AND CC_WORK_SHEET.MONTH_FLAG = ?
+			</value>
+		</property>
+		
+		
+		<property name="querySheetBySheetIdSql">
+			<value>
+				SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID,
+				REGION_NAME, SERVICE_TYPE, SERVICE_TYPE_DESC,
+				DATE_FORMAT(CREAT_DATE,'%Y-%m-%d %H:%i:%s') as
+				CREAT_DATE, DATE_FORMAT(SHEET_RECEIVE_DATE,'%Y-%m-%d %H:%i:%s') as SHEET_RECEIVE_DATE, RECEIVE_ORG_ID,
+				RECEIVE_ORG_NAME, RECEIVE_STAFF, RECEIVE_STAFF_NAME,
+				DEAL_REQUIRE, DATE_FORMAT(RESPOND_DATE,'%Y-%m-%d %H:%i:%s') as RESPOND_DATE, DEAL_STAFF,
+				DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME,
+				RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID,
+				RETURN_ORG_NAME, SOURCE_SHEET_ID, SHEET_STATU,
+				DATE_FORMAT(STATU_DATE,'%Y-%m-%d %H:%i:%s') as
+				STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID,
+				WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID,
+				LOCK_FLAG, DATE_FORMAT(LOCK_DATE,'%Y-%m-%d %H:%i:%s')
+				as LOCK_DATE, SHEET_PRI_VALUE,
+				DATE_FORMAT(HANGUP_START_TIME,'%Y-%m-%d %H:%i:%s') as
+				HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC,
+				TACHE_DESC, PRE_ALARM_VALUE, ALARM_VALUE,AUTO_VISIT_FLAG, 
+				DATE_FORMAT(PRECONTRACT_DATE,'%Y-%m-%d %H:%i:%s') as PRECONTRACT_DATE, 
+				PRECONTRACT_SIGN,SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY,
+				DEAL_DESC, DEAL_CONTENT, MAIN_SHEET_FLAG,
+				RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM,
+				SHEET_TYPE_DESC, STATIONLIMINT,
+				DATE_FORMAT(DISTILL_DATE,'%Y-%m-%d %H:%i:%s') AS DISTILL_DATE,
+				DEAL_ID, REPORT_NUM, NEST_TACHE, FLOW_SEQUENCE, PRECONTRACT_FLAG, HOME_SHEET 
+				FROM CC_WORK_SHEET
+				WHERE CC_WORK_SHEET.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="querySheetHisBySheetIdSql">
+			<value>
+				SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID,
+				REGION_NAME, SERVICE_TYPE, SERVICE_TYPE_DESC,
+				DATE_FORMAT(CREAT_DATE,'%Y-%m-%d %H:%i:%s') as
+				CREAT_DATE, DATE_FORMAT(SHEET_RECEIVE_DATE,'%Y-%m-%d %H:%i:%s') as SHEET_RECEIVE_DATE, RECEIVE_ORG_ID,
+				RECEIVE_ORG_NAME, RECEIVE_STAFF, RECEIVE_STAFF_NAME,
+				DEAL_REQUIRE, DATE_FORMAT(RESPOND_DATE,'%Y-%m-%d %H:%i:%s') as RESPOND_DATE, DEAL_STAFF,
+				DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME,
+				RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID,
+				RETURN_ORG_NAME, SOURCE_SHEET_ID, SHEET_STATU,
+				DATE_FORMAT(STATU_DATE,'%Y-%m-%d %H:%i:%s') as
+				STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID,
+				WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID,
+				LOCK_FLAG, DATE_FORMAT(LOCK_DATE,'%Y-%m-%d %H:%i:%s')
+				as LOCK_DATE, SHEET_PRI_VALUE,
+				DATE_FORMAT(HANGUP_START_TIME,'%Y-%m-%d %H:%i:%s') as
+				HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC,
+				TACHE_DESC, PRE_ALARM_VALUE, ALARM_VALUE,
+				AUTO_VISIT_FLAG, DATE_FORMAT(PRECONTRACT_DATE,'%Y-%m-%d %H:%i:%s') as PRECONTRACT_DATE, PRECONTRACT_SIGN,
+				SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY,
+				DEAL_DESC, DEAL_CONTENT, MAIN_SHEET_FLAG,
+				RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM,
+				SHEET_TYPE_DESC, STATIONLIMINT, DATE_FORMAT(DISTILL_DATE,'%Y-%m-%d %H:%i:%s') AS DISTILL_DATE, DEAL_ID,
+				REPORT_NUM, NEST_TACHE, FLOW_SEQUENCE, PRECONTRACT_FLAG, HOME_SHEET 
+				FROM CC_WORK_SHEET_HIS
+				WHERE CC_WORK_SHEET_HIS.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="querySheetStateSql">
+			<value>
+				SELECT T.SHEET_STATU FROM CC_WORK_SHEET T WHERE
+				T.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="updateSheetStateSql">
+			<value>
+				UPDATE CC_WORK_SHEET T SET T.SHEET_STATU = ?,
+				T.SHEET_STATU_DESC = ?, T.STATU_DATE =
+				NOW(),T.LOCK_FLAG=? WHERE T.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="updateFetchSheetStaffSql">
+			<value>
+				UPDATE CC_WORK_SHEET T SET T.DEAL_STAFF = ?,
+				T.DEAL_STAFF_NAME = ?, T.DEAL_ORG_ID = ?,
+				T.DEAL_ORG_NAME =
+				?,T.RECEIVE_STAFF=?,T.RECEIVE_STAFF_NAME=?,T.DISTILL_DATE=NOW()
+				WHERE T.WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="delSheetPubInfoByOrderIdSql">
+			<value>
+				DELETE A FROM cc_work_sheet A WHERE A.service_order_id = ?
+				AND A.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="qurySheetFlowSql">
+			<value>
+				SELECT W.WORK_SHEET_ID, W.SERVICE_ORDER_ID, W.REGION_ID,
+				W.REGION_NAME, W.SERVICE_TYPE, W.SERVICE_TYPE_DESC,
+				DATE_FORMAT(W.CREAT_DATE,'%Y-%m-%d %H:%i:%s') AS
+				CREAT_DATE, W.SHEET_RECEIVE_DATE, W.RECEIVE_ORG_ID,
+				W.RECEIVE_ORG_NAME, W.RECEIVE_STAFF,
+				W.RECEIVE_STAFF_NAME, W.DEAL_REQUIRE,
+				DATE_FORMAT(W.RESPOND_DATE, '%Y-%m-%d %H:%i:%s') as
+				RESPOND_DATE, W.DEAL_STAFF, W.DEAL_STAFF_NAME,
+				W.DEAL_ORG_ID, W.DEAL_ORG_NAME, W.RETURN_STAFF,
+				W.RETURN_STAFF_NAME, W.RETURN_ORG_ID, W.RETURN_ORG_NAME,
+				W.SOURCE_SHEET_ID, W.SHEET_STATU, W.STATU_DATE,
+				W.SHEET_TYPE, W.DEAL_LIMIT_TIME, W.TACHE_ID,
+				W.WFL_INST_ID, W.WORKSHEET_SCHEMA_ID, W.TACHE_INST_ID,
+				W.LOCK_FLAG, W.LOCK_DATE, W.SHEET_PRI_VALUE,
+				W.HANGUP_START_TIME, W.HANGUP_TIME_COUNT,
+				W.SHEET_STATU_DESC, W.TACHE_DESC, W.PRE_ALARM_VALUE,
+				W.ALARM_VALUE, W.AUTO_VISIT_FLAG, W.PRECONTRACT_DATE,
+				W.PRECONTRACT_SIGN, W.MONTH_FLAG, W.RECEIVE_ORG_DISPLAY,
+				W.DEAL_DESC, W.DEAL_CONTENT, W.MAIN_SHEET_FLAG,
+				W.RECEIVE_REGION_ID, W.RECEIVE_REGION_NAME,
+				W.HASTENT_NUM, W.SHEET_TYPE_DESC, W.STATIONLIMINT,
+				W.SAVE_DEALCONTEN , W.REPORT_NUM  ,W.NEST_TACHE ,W.FLOW_SEQUENCE ,
+				W.PRECONTRACT_FLAG,W.HOME_SHEET				
+				FROM CC_SERVICE_ORDER_ASK A,
+				CC_WORK_SHEET W WHERE A.REGION_ID = W.REGION_ID AND
+				A.SERVICE_ORDER_ID = W.SERVICE_ORDER_ID AND A.MONTH_FLAG = W.MONTH_FLAG AND W.SHEET_STATU = 700000047 
+				AND A.SERVICE_ORDER_ID = ? AND A.MONTH_FLAG = ?
+				ORDER BY W.RESPOND_DATE ASC
+			</value>
+		</property>
+		<property name="qurySheetFlowSqlHis">
+			<value>
+				SELECT W.WORK_SHEET_ID, W.SERVICE_ORDER_ID, W.REGION_ID,
+				W.REGION_NAME, W.SERVICE_TYPE, W.SERVICE_TYPE_DESC,
+				DATE_FORMAT(W.CREAT_DATE,'%Y-%m-%d %H:%i:%s') AS
+				CREAT_DATE, W.SHEET_RECEIVE_DATE, W.RECEIVE_ORG_ID,
+				W.RECEIVE_ORG_NAME, W.RECEIVE_STAFF,
+				W.RECEIVE_STAFF_NAME, W.DEAL_REQUIRE,
+				DATE_FORMAT(W.RESPOND_DATE,'%Y-%m-%d %H:%i:%s') as
+				RESPOND_DATE, W.DEAL_STAFF, W.DEAL_STAFF_NAME,
+				W.DEAL_ORG_ID, W.DEAL_ORG_NAME, W.RETURN_STAFF,
+				W.RETURN_STAFF_NAME, W.RETURN_ORG_ID, W.RETURN_ORG_NAME,
+				W.SOURCE_SHEET_ID, W.SHEET_STATU, W.STATU_DATE,
+				W.SHEET_TYPE, W.DEAL_LIMIT_TIME, W.TACHE_ID,
+				W.WFL_INST_ID, W.WORKSHEET_SCHEMA_ID, W.TACHE_INST_ID,
+				W.LOCK_FLAG, W.LOCK_DATE, W.SHEET_PRI_VALUE,
+				W.HANGUP_START_TIME, W.HANGUP_TIME_COUNT,
+				W.SHEET_STATU_DESC, W.TACHE_DESC, W.PRE_ALARM_VALUE,
+				W.ALARM_VALUE, W.AUTO_VISIT_FLAG, W.PRECONTRACT_DATE,
+				W.PRECONTRACT_SIGN, W.MONTH_FLAG, W.RECEIVE_ORG_DISPLAY,
+				W.DEAL_DESC, W.DEAL_CONTENT, W.MAIN_SHEET_FLAG,
+				W.RECEIVE_REGION_ID, W.RECEIVE_REGION_NAME,
+				W.HASTENT_NUM, W.SHEET_TYPE_DESC,
+				W.STATIONLIMINT,W.SAVE_DEALCONTEN , W.REPORT_NUM   ,W.NEST_TACHE ,W.FLOW_SEQUENCE,
+				 W.PRECONTRACT_FLAG  ,W.HOME_SHEET 
+				FROM CC_SERVICE_ORDER_ASK_HIS A,CC_WORK_SHEET_HIS W WHERE
+				A.REGION_ID = W.REGION_ID AND A.SERVICE_ORDER_ID =
+				W.SERVICE_ORDER_ID AND A.MONTH_FLAG = W.MONTH_FLAG AND
+				W.SHEET_STATU=700000047 AND A.SERVICE_ORDER_ID=? AND
+				A.MONTH_FLAG=? AND A.ORDER_VESION = 0
+				ORDER BY W.RESPOND_DATE ASC
+			</value>
+		</property>
+		<property name="quryRelatSheetSql">
+			<value>
+				SELECT W.WORK_SHEET_ID, W.SERVICE_ORDER_ID, W.REGION_ID,
+				W.REGION_NAME, W.SERVICE_TYPE, W.SERVICE_TYPE_DESC,
+				DATE_FORMAT(W.CREAT_DATE, '%Y-%m-%d %H:%i:%s') as CREAT_DATE, 
+				DATE_FORMAT(W.SHEET_RECEIVE_DATE, '%Y-%m-%d %H:%i:%s') as SHEET_RECEIVE_DATE, 
+				W.RECEIVE_ORG_ID,W.RECEIVE_ORG_NAME, W.RECEIVE_STAFF,
+				W.RECEIVE_STAFF_NAME, W.DEAL_REQUIRE,
+				DATE_FORMAT(W.RESPOND_DATE, '%Y-%m-%d %H:%i:%s') as RESPOND_DATE, 
+				W.DEAL_STAFF, W.DEAL_STAFF_NAME,
+				W.DEAL_ORG_ID, W.DEAL_ORG_NAME, W.RETURN_STAFF,
+				W.RETURN_STAFF_NAME, W.RETURN_ORG_ID, W.RETURN_ORG_NAME,
+				W.SOURCE_SHEET_ID, W.SHEET_STATU, 
+				DATE_FORMAT(W.STATU_DATE, '%Y-%m-%d %H:%i:%s') as STATU_DATE, 
+				W.SHEET_TYPE, W.DEAL_LIMIT_TIME, W.TACHE_ID, W.WFL_INST_ID,
+				W.WORKSHEET_SCHEMA_ID, W.TACHE_INST_ID, W.LOCK_FLAG,
+				DATE_FORMAT(W.LOCK_DATE, '%Y-%m-%d %H:%i:%s') as LOCK_DATE, 
+				W.SHEET_PRI_VALUE,
+				DATE_FORMAT(W.HANGUP_START_TIME, '%Y-%m-%d %H:%i:%s') as HANGUP_START_TIME, 
+				W.HANGUP_TIME_COUNT,
+				W.SHEET_STATU_DESC, W.TACHE_DESC, W.PRE_ALARM_VALUE,
+				W.ALARM_VALUE, W.AUTO_VISIT_FLAG,
+				DATE_FORMAT(W.PRECONTRACT_DATE, '%Y-%m-%d %H:%i:%s') as PRECONTRACT_DATE, 
+				W.PRECONTRACT_SIGN, W.SAVE_DEALCONTEN,
+				W.MONTH_FLAG, W.RECEIVE_ORG_DISPLAY, W.DEAL_DESC,
+				W.DEAL_CONTENT, W.MAIN_SHEET_FLAG, W.RECEIVE_REGION_ID,
+				W.RECEIVE_REGION_NAME, W.HASTENT_NUM, W.SHEET_TYPE_DESC,
+				W.STATIONLIMINT , W.REPORT_NUM  , W.NEST_TACHE ,W.FLOW_SEQUENCE,
+				W.PRECONTRACT_FLAG  
+				
+				,W.HOME_SHEET
+				
+				FROM CC_WORK_SHEET W,CC_WORKSHEET_ALLOT_RELA A 
+				WHERE W.MONTH_FLAG = A.MONTH_FLAG 
+				AND W.WORK_SHEET_ID = A.DEAL_WORKSHEET_ID
+				AND A.MONTH_FLAG=? AND A.CHECK_WORKSHEET_ID=?
+			</value>
+		</property>
+		<property name="queryLatestSheetByType">
+			<value>
+				SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID, REGION_NAME, SERVICE_TYPE, SERVICE_TYPE_DESC, 
+					DATE_FORMAT(CREAT_DATE,'%Y-%m-%d %H:%i:%s') CREAT_DATE, DATE_FORMAT(SHEET_RECEIVE_DATE,'%Y-%m-%d %H:%i:%s') SHEET_RECEIVE_DATE, 
+					RECEIVE_ORG_ID, RECEIVE_ORG_NAME, RECEIVE_STAFF, RECEIVE_STAFF_NAME, DEAL_REQUIRE, 
+					DATE_FORMAT(RESPOND_DATE,'%Y-%m-%d %H:%i:%s') RESPOND_DATE, 
+					DEAL_STAFF, DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME, RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID, RETURN_ORG_NAME, 
+					SOURCE_SHEET_ID, SHEET_STATU, 
+					DATE_FORMAT(STATU_DATE,'%Y-%m-%d %H:%i:%s') STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID, WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID, LOCK_FLAG, 
+					DATE_FORMAT(LOCK_DATE,'%Y-%m-%d %H:%i:%s') LOCK_DATE, SHEET_PRI_VALUE, HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC, TACHE_DESC, PRE_ALARM_VALUE, ALARM_VALUE, AUTO_VISIT_FLAG, PRECONTRACT_DATE, PRECONTRACT_SIGN, SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY, DEAL_DESC, DEAL_CONTENT, MAIN_SHEET_FLAG, RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM, SHEET_TYPE_DESC, STATIONLIMINT, DISTILL_DATE, DEAL_ID, NEST_TACHE, FLOW_SEQUENCE, REPORT_NUM, PRECONTRACT_FLAG, HOME_SHEET
+				FROM CC_WORK_SHEET
+				WHERE SERVICE_ORDER_ID = ?
+					AND SHEET_TYPE = ? AND MAIN_SHEET_FLAG = ?
+				ORDER BY CREAT_DATE DESC LIMIT 1
+			</value>
+		</property>
+		<property name="queryLastSheetNoSystemByTypeSql">
+			<value>
+				SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, REGION_ID, REGION_NAME, SERVICE_TYPE, SERVICE_TYPE_DESC, 
+					DATE_FORMAT(CREAT_DATE,'%Y-%m-%d %H:%i:%s') CREAT_DATE, DATE_FORMAT(SHEET_RECEIVE_DATE,'%Y-%m-%d %H:%i:%s') SHEET_RECEIVE_DATE, 
+					RECEIVE_ORG_ID, RECEIVE_ORG_NAME, RECEIVE_STAFF, RECEIVE_STAFF_NAME, DEAL_REQUIRE, 
+					DATE_FORMAT(RESPOND_DATE,'%Y-%m-%d %H:%i:%s') RESPOND_DATE, 
+					DEAL_STAFF, DEAL_STAFF_NAME, DEAL_ORG_ID, DEAL_ORG_NAME, RETURN_STAFF, RETURN_STAFF_NAME, RETURN_ORG_ID, RETURN_ORG_NAME, 
+					SOURCE_SHEET_ID, SHEET_STATU, 
+					DATE_FORMAT(STATU_DATE,'%Y-%m-%d %H:%i:%s') STATU_DATE, SHEET_TYPE, DEAL_LIMIT_TIME, TACHE_ID, WFL_INST_ID, WORKSHEET_SCHEMA_ID, TACHE_INST_ID, LOCK_FLAG, 
+					DATE_FORMAT(LOCK_DATE,'%Y-%m-%d %H:%i:%s') LOCK_DATE, SHEET_PRI_VALUE, HANGUP_START_TIME, HANGUP_TIME_COUNT, SHEET_STATU_DESC, TACHE_DESC, PRE_ALARM_VALUE, ALARM_VALUE, AUTO_VISIT_FLAG, PRECONTRACT_DATE, PRECONTRACT_SIGN, SAVE_DEALCONTEN, MONTH_FLAG, RECEIVE_ORG_DISPLAY, DEAL_DESC, DEAL_CONTENT, MAIN_SHEET_FLAG, RECEIVE_REGION_ID, RECEIVE_REGION_NAME, HASTENT_NUM, SHEET_TYPE_DESC, STATIONLIMINT, DISTILL_DATE, DEAL_ID, NEST_TACHE, FLOW_SEQUENCE, REPORT_NUM, PRECONTRACT_FLAG, HOME_SHEET
+				FROM CC_WORK_SHEET
+				WHERE SERVICE_ORDER_ID = ?
+					AND SHEET_TYPE = ? AND MAIN_SHEET_FLAG = ?
+					AND DEAL_ORG_NAME NOT IN ('SYSTEM')
+				ORDER BY CREAT_DATE DESC LIMIT 1
+			</value>
+		</property>
+		<property name="updateRegionSql">
+			<value>UPDATE CC_WORK_SHEET S SET S.REGION_ID = ?, S.REGION_NAME = ? WHERE S.SERVICE_ORDER_ID = ? AND S.REGION_ID = ? AND S.MONTH_FLAG = ?</value>
+		</property>
+		<property name="updateAutoVisitSql">
+			<value>UPDATE cc_work_sheet SET auto_visit_flag = ?, report_num = ?, home_sheet = ? WHERE work_sheet_id = ?</value>
+		</property>
+		<property name="selectCurDealSheetByOrderIdSql">
+			<value>
+				SELECT b.WORK_SHEET_ID, a.REGION_ID, a.REGION_NAME, b.MONTH_FLAG
+				  FROM cc_service_order_ask a, cc_work_sheet b
+				 WHERE a.service_order_id = b.service_order_id
+				   AND sheet_statu NOT IN (700000047, 700000049, 720130034, 720130036)
+				   AND a.service_order_id = ?
+				 ORDER BY lock_date DESC
+			</value>
+		</property>
+		<property name="selectFirstDealSheetByOrderIdSql">
+			<value>
+SELECT SERVICE_ORDER_ID, RELAPHONE
+  FROM cc_work_sheet, tsm_staff
+ WHERE deal_staff = staff_id
+   AND service_order_id = ?
+   AND tache_id = 720130021
+   AND lock_flag IN (1, 2)
+   AND relaphone IS NOT NULL
+ ORDER BY creat_date
+			</value>
+		</property>
+		<property name="insertWorkSheetAreaSql">
+			<value>
+				INSERT INTO cc_work_sheet_area
+				  (service_order_id, work_sheet_id, creat_date, receive_area_org_id, area_flag)
+				VALUES
+				  (?, ?, now(), ?, ?)
+			</value>
+		</property>
+		<property name="insertWorkSheetAreaHisSql">
+			<value>
+INSERT INTO cc_work_sheet_area_his
+  (service_order_id,
+   work_sheet_id,
+   creat_date,
+   receive_area_org_id,
+   area_flag,
+   tache_date)
+  SELECT service_order_id,
+         work_sheet_id,
+         creat_date,
+         receive_area_org_id,
+         area_flag,
+         tache_date
+    FROM cc_work_sheet_area
+   WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="deleteWorkSheetAreaByOrderIdSql">
+			<value>
+				DELETE FROM cc_work_sheet_area WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="deleteWorkSheetAreaBySheetIdSql">
+			<value>
+				DELETE FROM cc_work_sheet_area WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="updateWorkSheetAreaTacheDateSql">
+			<value>
+				UPDATE cc_work_sheet_area SET tache_date = NOW() WHERE tache_date IS NULL AND service_order_id = ?
+			</value>
+		</property>
+		<property name="updateWorkSheetAreaSheetBySheetIdSql">
+			<value>
+				UPDATE cc_work_sheet_area
+				   SET work_sheet_id = ?, receive_area_org_id = ?, area_flag = ?, tache_date = null
+				 WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="countWorkSheetAreaByOrderIdSql">
+			<value>
+				SELECT COUNT(1) FROM cc_work_sheet_area WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectWorkSheetAreaBySheetIdSql">
+			<value>
+				SELECT area_flag FROM cc_work_sheet_area WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="selectLastWorkSheetIdByOrderIdSql">
+			<value>
+				SELECT WORK_SHEET_ID
+				          FROM cc_work_sheet_area
+				         WHERE service_order_id = ?
+				           AND area_flag = 1
+				         ORDER BY creat_date DESC LIMIT 1
+			</value>
+		</property>
+		<property name="deleteWorkSheetBySheetIdSql">
+			<value>
+				DELETE FROM cc_work_sheet WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="selectSheetReceiveDateSql">
+			<value>
+				SELECT DATE_FORMAT(sheet_receive_date, '%Y-%m-%d %H:%i:%s') SHEET_RECEIVE_DATE
+				  FROM cc_work_sheet
+				 WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="updateDealLimitTimeByOrderIdSql">
+			<value>
+				UPDATE cc_work_sheet
+				   SET deal_limit_time = ?
+				 WHERE service_order_id = ?
+				   AND tache_id IN (700000085, 720130021, 700000086, 720130023, 720130024)
+				   AND sheet_type NOT IN (720130028, 720130029)
+				   AND sheet_statu NOT IN (700000047, 700000049, 720130036, 720130037)
+			</value>
+		</property>
+		<property name="updateAuditLimitTimeByOrderIdSql">
+			<value>
+				UPDATE cc_work_sheet
+				   SET deal_limit_time = ?
+				 WHERE service_order_id = ?
+				   AND tache_id IN (700000088, 600000446, 700001751, 720130025)
+			</value>
+		</property>
+		<property name="updateLastXcSheetIdBySheetIdSql">
+			<value>
+				UPDATE cc_work_sheet SET last_xc_sheet_id = ? WHERE work_sheet_id = ?
+			</value>
+		</property>
+		<property name="selectCalloutRecByOrderIdSql">
+			<value>
+SELECT SATISFY_DEGREE, DATE_FORMAT(JUDGE_DATE, '%Y-%m-%d %H:%i:%s') JUDGE_DATE
+  FROM CC_ORDER_CALLOUT_REC
+ WHERE SATISFY_FLAG = 1
+   AND SERVICE_ORDER_ID = ?
+ ORDER BY CALL_ARRIVE DESC
+			</value>
+		</property>
+		<property name="insertCustomerJudgeSql">
+			<value>
+INSERT INTO CC_CUSTOMER_JUDGE(SERVICE_ORDER_ID,UNIFIED_COMPLAINT_CODE,TACHE_TYPE,JUDGE_STATUS,CREATE_DATE)VALUES(?,?,?,0,NOW())
+			</value>
+		</property>
+		<property name="deleteCustomerJudgeByOrderIdSql">
+			<value>
+DELETE FROM CC_CUSTOMER_JUDGE WHERE SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="updateCustomerJudgeStatusExceptionSql">
+			<value>
+UPDATE CC_CUSTOMER_JUDGE SET JUDGE_STATUS=? WHERE SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="updateCustomerJudgeStatusFromIVRSql">
+			<value>
+UPDATE CC_CUSTOMER_JUDGE SET JUDGE_STATUS=1,IVR_JUDGE_DATE=STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s'),IVR_DEGREE=? WHERE SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="updateCustomerJudgeStatusToZDHFSql">
+			<value>
+UPDATE CC_CUSTOMER_JUDGE SET JUDGE_STATUS=2,CALL_BEGIN_DATE=NOW() WHERE SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="updateCustomerJudgeStatusFromZDHFSql">
+			<value>
+UPDATE CC_CUSTOMER_JUDGE SET JUDGE_STATUS=3,CALL_JUDGE_DATE=NOW(),CALL_DEGREE=? WHERE SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="selectCustomerJudgeByOrderIdSql">
+			<value>
+SELECT SERVICE_ORDER_ID,
+       UNIFIED_COMPLAINT_CODE,
+       TACHE_TYPE,
+       JUDGE_STATUS,
+       DATE_FORMAT(CREATE_DATE, '%Y-%m-%d %H:%i:%s') CREATE_DATE,
+       DATE_FORMAT(IVR_JUDGE_DATE, '%Y-%m-%d %H:%i:%s') IVR_JUDGE_DATE,
+       IVR_DEGREE,
+       DATE_FORMAT(CALL_BEGIN_DATE, '%Y-%m-%d %H:%i:%s') CALL_BEGIN_DATE,
+       DATE_FORMAT(CALL_JUDGE_DATE, '%Y-%m-%d %H:%i:%s') CALL_JUDGE_DATE,
+       CALL_DEGREE
+  FROM CC_CUSTOMER_JUDGE
+ WHERE SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="insertCustomerJudgeHisByOrderIdSql">
+			<value>
+INSERT INTO CC_CUSTOMER_JUDGE_HIS
+  (SERVICE_ORDER_ID, UNIFIED_COMPLAINT_CODE, TACHE_TYPE, JUDGE_STATUS, CREATE_DATE, IVR_JUDGE_DATE, IVR_DEGREE, CALL_BEGIN_DATE, CALL_JUDGE_DATE, CALL_DEGREE)
+  SELECT SERVICE_ORDER_ID, UNIFIED_COMPLAINT_CODE, TACHE_TYPE, JUDGE_STATUS, CREATE_DATE, IVR_JUDGE_DATE, IVR_DEGREE, CALL_BEGIN_DATE, CALL_JUDGE_DATE, CALL_DEGREE
+    FROM CC_CUSTOMER_JUDGE
+   WHERE SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+	</bean>
+	
+	<!-- 预受理业务处理类 -->
+	<bean id="preDealServiceImpl__FACADE__"
+		  class="com.timesontransfar.customservice.worksheet.service.impl.PreDealServiceImpl"
+		  parent="abstractDealService" >    	
+		<property name="sheetLimitTimeServ">
+			<ref bean="sheetLimitTimeServ" />
+		</property>   
+		<property name="sheetFlowOrg">
+			<ref bean="sheetFlowOrgId" /> 
+		</property>
+		<property name="workSheetAllot">
+			<ref bean="workSheetAllot"/>
+		</property>
+		<property name="sjSheetQualitative">
+			<ref bean="sjSheetQualitativeDaoImpl" />
+		</property>
+	</bean> 
+	<!-- 疑难业务处理类 -->
+	<bean id="YnSheetDealServiceImpl__FACADE__"
+		  class="com.timesontransfar.customservice.worksheet.service.impl.YnSheetDealServiceImpl"
+		  parent="abstractDealService" >     
+	</bean>
+	<bean id="abstractDealService"
+		  class="com.timesontransfar.customservice.worksheet.service.impl.AbstractDealService"
+	      abstract="true"> 
+		<property name="pubFunc">
+			<ref bean="pubFunc" />
+		</property>
+		<property name="businessOpportunityDao">
+			<ref bean="businessOpportunityDao" />
+		</property>
+		<property name="sheetPubInfoDao">
+			<ref bean="sheetPubInfoDao" />
+		</property>
+		<property name="workFlowAttemper">
+			<ref bean="WorkFlowAttemper__FACADE__" />
+		</property>
+		 <property name="workSheetAlllot">
+			<ref bean="workSheetAllotReal" />
+		</property>
+		<property name="orderAskInfoDao">
+			<ref bean="orderAskInfoDao" />
+		</property>
+		<property name="sheetActionInfoDao">
+			<ref bean="SheetActionInfoDaoImpl" />
+		</property>
+		<property name="tsWorkSheetDao">
+			<ref bean="tsWorkSheetDaoImpl" />
+		</property>
+		<property name="staffWorkSkill">
+			<ref bean="staffWorkSkill" />
+		</property>
+		<property name="servContentDao">
+			<ref bean="serviceContentDao" />
+		</property>
+		<property name="orderCustInfoDao">
+			<ref bean="orderCustInfoDao" />
+		</property>  
+		<property name="noteSen">
+			<ref bean="noteSenListDao" />
+		</property>
+		<property name="workSheetAllot">
+			<ref bean="workSheetAllot"/>
+  		</property>
+	</bean>
+
+	<bean id="businessOpportunityDao" class="com.timesontransfar.customservice.businessOpportunity.dao.impl.BusinessOpportunityDaoImpl">
+
+	</bean>
+
+	<bean id="SheetTodispatchDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.SheetTodispatchDaoImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveObjSql">
+			<value>INSERT INTO CC_SHEET_TODISPATCH(WORK_SHEET_ID,SERVICE_ORDER_ID,TO_ORG_ID,REASON,CREATE_DATE)VALUES(?,?,?,?,NOW())</value>
+		</property>
+		<property name="saveObjHisSql">
+			<value>
+				INSERT INTO CC_SHEET_TODISPATCH_HIS(WORK_SHEET_ID, SERVICE_ORDER_ID, TO_ORG_ID, REASON, CREATE_DATE) 
+				SELECT WORK_SHEET_ID, SERVICE_ORDER_ID, TO_ORG_ID, REASON, CREATE_DATE FROM CC_SHEET_TODISPATCH WHERE SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="deleteObjSql">
+			<value>DELETE FROM CC_SHEET_TODISPATCH WHERE SERVICE_ORDER_ID = ?</value>
+		</property>
+		<property name="queryLatestSql">
+			<value>SELECT S.SERVICE_ORDER_ID,S.WORK_SHEET_ID,S.TO_ORG_ID,S.REASON, DATE_FORMAT(S.CREATE_DATE,'%Y-%m-%d %H:%i:%s') CREATE_DATE FROM CC_SHEET_TODISPATCH S 
+					WHERE S.SERVICE_ORDER_ID = ? ORDER BY S.CREATE_DATE DESC</value>
+		</property>
+		<property name="queryLatestTSSql">
+			<value>
+				SELECT a.SERVICE_ORDER_ID,
+				       a.WORK_SHEET_ID,
+				       a.TO_ORG_ID,
+				       a.REASON,
+				       DATE_FORMAT(a.create_date, '%Y-%m-%d %H:%i:%s') CREATE_DATE
+				  FROM cc_sheet_todispatch a, cc_work_sheet b
+				 WHERE a.service_order_id = b.service_order_id
+				   AND a.work_sheet_id = b.source_sheet_id
+				   AND b.work_sheet_id = ?
+				 ORDER BY a.create_date DESC
+			</value>
+		</property>
+	</bean>
+	<!--派单关系 -->
+	<bean id="workSheetAllotReal"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.WorkSheetAllotRealDaoImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveSql">
+			<value>
+				INSERT INTO
+				CC_WORKSHEET_ALLOT_RELA(DEAL_WORKSHEET_ID,CHECK_WORKSHEET_ID,PRE_DEAL_WORKSHEET_ID,
+				CHECK_FLAG,MAIN_SHEET_FLAG,DEAL_STATUS_DESC,MONTH_FLAG,SERVICE_ORDER_ID)
+				VALUES(?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="saveHisSql">
+			<value>
+				INSERT INTO CC_WORKSHEET_ALLOT_RELA_HIS (
+				DEAL_WORKSHEET_ID, CHECK_WORKSHEET_ID,
+				PRE_DEAL_WORKSHEET_ID, CHECK_FLAG,
+				MAIN_SHEET_FLAG, DEAL_STATUS_DESC, MONTH_FLAG,
+				SERVICE_ORDER_ID ) SELECT B.DEAL_WORKSHEET_ID,
+				B.CHECK_WORKSHEET_ID, B.PRE_DEAL_WORKSHEET_ID,
+				B.CHECK_FLAG, B.MAIN_SHEET_FLAG, B.DEAL_STATUS_DESC,
+				B.MONTH_FLAG, B.SERVICE_ORDER_ID FROM
+				CC_WORKSHEET_ALLOT_RELA B WHERE B.SERVICE_ORDER_ID = ?
+				AND B.MONTH_FLAG = ?
+			</value>
+		</property>
+		<property name="updateSql">
+			<value>
+				UPDATE CC_WORKSHEET_ALLOT_RELA SET
+				CHECK_FLAG=?,DEAL_STATUS_DESC=? WHERE MONTH_FLAG=? AND
+				DEAL_WORKSHEET_ID=?
+			</value>
+		</property>
+		<property name="qurySql">
+			<value>
+				SELECT * FROM CC_WORKSHEET_ALLOT_RELA WHERE 1=1
+			</value>
+		</property>
+		<property name="quryHisSql">
+			<value>
+				SELECT * FROM CC_WORKSHEET_ALLOT_RELA_HIS WHERE 1=1
+			</value>
+		</property>
+	</bean>
+	<!-- 短信发送 -->
+	<bean id="noteSenListDao" class="com.timesontransfar.customservice.worksheet.dao.impl.NoteSenListDao">
+		<property name="saveNoteListSql">
+			<value>
+				INSERT INTO
+				CC_NOTE_SEND_LIST(NOTE_GUID,ORG_ID,ORG_NAME,RELA_PERSON,RELAPHONE,TACH_ID,CLIENT_TYPE,UPDATE_DATE,RELA_ID,
+				ROLE_TYPE, START_TIME, END_TIME)
+				VALUES(?,?,?,?,?,?,?,NOW(),?,?,?,?)
+			</value>
+		</property>
+		<property name="updateNoteListSql">
+			<value>
+				UPDATE CC_NOTE_SEND_LIST SET NOTE_GUID = ?, ORG_ID =
+				?, ORG_NAME = ?, RELA_PERSON = ?, RELAPHONE = ?, TACH_ID
+				= ?, CLIENT_TYPE = ?, UPDATE_DATE = NOW(), RELA_ID = ?,
+				ROLE_TYPE = ?, START_TIME = ?, END_TIME = ? WHERE
+				NOTE_GUID =?
+			</value>
+		</property>
+	</bean>	
+</beans>

@@ -1,0 +1,22 @@
+---
+common:
+  active: ctyun-jar
+  port: 12118
+  licence: "8321100029"
+  aiopsagent_path: "/aiopsagent/aiopsagent-1.8.0/aiopsagent-1.8.0.jar"
+  project_tag: "jscscCTjar"
+  name: "customactiviti"
+  flag: "1"
+
+run:
+  - hostname: cf47.ct
+  - hostname: cf48.ct
+  - hostname: cf66.ct
+  - hostname: cf67.ct
+  - hostname: cf68.ct
+  - hostname: cf74.ct
+  - hostname: cf77.ct
+  - hostname: cf78.ct
+  - hostname: cf79.ct
+  - hostname: cf81.ct
+  - hostname: cf85.ct

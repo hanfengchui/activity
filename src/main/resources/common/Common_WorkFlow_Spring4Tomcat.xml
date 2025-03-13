@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="WorkFlowAttemper" class="com.timesontransfar.common.workflow.impl.WorkFlowAttemperFacade">
+		<property name="workFlowAttemper">
+			<ref bean="WorkFlowAttemper__FACADE__" />
+		</property>
+	</bean>
+
+	<bean id="WorkFlowAttemper__FACADE__" class="com.timesontransfar.common.workflow.impl.WorkFlowAttemperImpl">
+		<property name="workFlowAccessDAO">
+			<ref bean="WorkFlowAccessDAO" />
+		</property>
+		<property name="workFlowInvoke">
+			<ref bean="WorkFlowInvoke" />
+		</property>
+	</bean>
+
+	<bean id="WorkFlowAccessDAO"
+		class="com.timesontransfar.common.workflow.model.service.impl.WorkFlowDaoImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="keyGenerator">
+			<ref bean="keyGenerator" />
+		</property>
+		<property name="sqlgetWFSchema">
+			<value>
+				SELECT * FROM TSP_WORKFLOW t where t.WFL_ID=? AND
+				T.WFSTATE=1 AND T.WFL_TYPE_EX=2
+			</value>
+		</property>
+		<property name="sqlgetTachePos">
+			<value>
+				SELECT XPOS,YPOS FROM TSP_WORKFLOW_TACHE_POS WHERE
+				TACHE_ID=?
+			</value>
+		</property>
+		<property name="sqlgetNodeInstanceNotOver">
+			<value>
+				SELECT * FROM tsp_process_instance_node WHERE
+				WFINSTANCEID=? AND NODE_TYPE !=2
+			</value>
+		</property>
+		<property name="sqlgetExceMethod">
+			<value>
+				SELECT * FROM TSP_METHOD_INFO WHERE METHODCODE=?
+			</value>
+		</property>
+		<property name="sqlgetExternalSystemInfo">
+			<value>
+				SELECT * FROM TSP_SYSTEM_INFO WHERE SYSTEMID=?
+			</value>
+		</property>
+		<property name="sqlgetInCondition">
+			<value>
+				SELECT T2.* FROM TSP_NODE_CONDITION
+				T1,TSP_CONDITION_INFO T2 WHERE t1.TACHE_ID=? AND
+				T1.CONDTYPE=1 AND T2.CONDNO=T1.CONDNO ORDER BY T2.SEQ
+			</value>
+		</property>
+		<property name="sqlgetMethodParamsOfCondition">
+			<value>
+				SELECT * FROM TSP_NODE_OPARAM_CONFIG WHERE CONDNO=?
+			</value>
+		</property>
+		<property name="sqlgetMethodParamsOfNode">
+			<value>
+				SELECT * FROM TSP_NODE_OPARAM_CONFIG WHERE TACHE_ID=?
+				AND METHODCODE=?
+			</value>
+		</property>
+		<property name="sqlgetNodeInstance">
+			<value>
+				SELECT * FROM TSP_PROCESS_INSTANCE_NODE WHERE
+				WFINSTANCEID=? AND TACHE_ID=? AND NODE_TYPE=?
+			</value>
+		</property>
+		<property name="sqlgetNodeInstanceByInstanceId">
+			<value>
+				SELECT * FROM TSP_PROCESS_INSTANCE_NODE WHERE
+				INSTANCEID=?
+			</value>
+		</property>
+		<property name="sqlgetNodeInstanceCanRollback">
+			<value>
+				SELECT T1.* FROM TSP_PROCESS_INSTANCE_NODE
+				T1,TSP_WORKFLOW_TACHE_RELA T2 WHERE T1.INSTANCEID in (
+			</value>
+		</property>
+		<property name="sqlgetNodeInstanceOfCurrent">
+			<value>
+				SELECT * FROM TSP_PROCESS_INSTANCE_NODE WHERE
+				WFINSTANCEID=? AND (NODE_TYPE =? OR NODE_TYPE=?)
+			</value>
+		</property>
+		<property name="sqlgetOutCondition">
+			<value>
+				SELECT T2.* FROM TSP_NODE_CONDITION
+				T1,TSP_CONDITION_INFO T2 WHERE t1.TACHE_ID=? AND
+				T1.CONDTYPE=0 AND T2.CONDNO=T1.CONDNO ORDER BY T2.SEQ
+			</value>
+		</property>
+		<property name="sqlgetWFConditionByNode">
+			<value>
+				SELECT t2.* FROM TSP_ROUTE_INFO t1,TSP_CONDITION_INFO t2
+				WHERE t1.RTNO=? AND t2.RTNO=t1.RTNO
+			</value>
+		</property>
+		<property name="sqlgetWFInstance">
+			<value>
+				SELECT * FROM TSP_PROCESS_INSTANCE where INSTANCEID=?
+			</value>
+		</property>
+		<property name="sqlgetWFNode">
+			<value>
+				SELECT * FROM TSP_WORKFLOW_TACHE_RELA T WHERE
+				T.TACHE_ID=?
+			</value>
+		</property>
+		<property name="sqlgetWFNodeOfType">
+			<value>
+				SELECT * FROM TSP_WORKFLOW_TACHE_RELA WHERE WFL_ID=? AND
+				NDTYPE=?
+			</value>
+		</property>
+		<property name="sqlgetWFRouteByNode">
+			<value>
+				SELECT t2.* FROM TSP_WORKFLOW_TACHE_RELA
+				t1,tsp_route_info t2,tsp_workflow_tache_rela t3 WHERE
+				t1.TACHE_ID=? AND t2.TACHE_ID=t1.TACHE_ID AND
+				t2.NEXT_NODE=T3.TACHE_ID AND T3.NDSTATE='1' AND
+				t2.rtstate=1
+			</value>
+		</property>
+		<property name="sqlinsertWFInstance">
+			<value>
+				INSERT INTO
+				TSP_PROCESS_INSTANCE(INSTANCEID,WFL_ID,REGION_ID,END_FLAG)
+				VALUES(?,?,?,?)
+			</value>
+		</property>
+		<property name="sqlinsertWFInstanceNode">
+			<value>
+				INSERT INTO
+				TSP_PROCESS_INSTANCE_NODE(TACHE_ID,INDATETIME,COSTTIME,GETPARAMENT,REGION_ID,PARENTID,CHILDRENID,WFINSTANCEID,NODE_TYPE,INSTANCEID)
+				VALUES(?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="sqlsave2ESYSState">
+			<value>
+				INSERT INTO
+				TSP_ESYS_MSG_STATUS(TEMP_ID,INSTANCE_ID,NODE_INSTANCE_ID,MSG_TYPE
+				) VALUES(?,?,?,?)
+			</value>
+		</property>
+		<property name="sqlupdateWFInstance">
+			<value>
+				UPDATE TSP_PROCESS_INSTANCE SET END_FLAG=? WHERE
+				INSTANCEID=?
+			</value>
+		</property>
+		<property name="sqlupdateWFNodeInstance">
+			<value>
+				UPDATE TSP_PROCESS_INSTANCE_NODE SET
+				TACHE_ID=?,INDATETIME=?,REGION_ID=?,PARENTID=?,CHILDRENID=?,WFINSTANCEID=?,NODE_TYPE=?
+				WHERE INSTANCEID=?
+			</value>
+		</property>
+		<property name="sqlupdateWFNodeInstance1">
+			<value>
+				UPDATE TSP_PROCESS_INSTANCE_NODE SET
+				TACHE_ID=?,INDATETIME=?,REGION_ID=?,PARENTID=?,CHILDRENID=?,WFINSTANCEID=?,NODE_TYPE=?,COSTTIME=?,OUTDATETIME=?
+				WHERE INSTANCEID=?
+			</value>
+		</property>
+		<property name="sqlgetOrgByTacheAndRegion">
+			<value>
+				SELECT * FROM tsp_worksheet_flow T WHERE T.TACHE_ID=?
+				AND T.REGION_ID=?
+			</value>
+		</property>
+		<property name="sqlarchiveWorkFlowInstance">
+			<value>
+				insert into tsp_process_instance_his select * from
+				tsp_process_instance where instanceid=?
+			</value>
+		</property>
+		<property name="sqlarchiveWorkFlowInstanceNode">
+			<value>
+				insert into
+				tsp_process_instance_node_his(INSTANCEID,TACHE_ID,WFGUID,INDATETIME,COSTTIME,OUTDATETIME
+				,REGION_ID,PARENTID,CHILDRENID,WFINSTANCEID,NODE_TYPE)
+				select
+				INSTANCEID,TACHE_ID,WFGUID,INDATETIME,COSTTIME,OUTDATETIME
+				,REGION_ID,PARENTID,CHILDRENID,WFINSTANCEID,NODE_TYPE
+				from tsp_process_instance_node where wfinstanceid=?
+			</value>
+		</property>
+		<property name="sqldeleteWorkFlowInstanceNode">
+			<value>
+				delete from tsp_process_instance_node where
+				wfinstanceid=?
+			</value>
+		</property>
+		<property name="sqldeleteWorkFlowInstance">
+			<value>
+				delete from tsp_process_instance where instanceid=?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="WorkFlowInvoke" class="com.timesontransfar.common.workflow.impl.WorkFlowInvokeImpl">
+		<property name="cache">
+			<ref bean="WorkFlowCache" />
+		</property>
+	</bean>
+
+	<bean id="WorkFlowCache" class="com.timesontransfar.common.cache.CacheFactoryBean">
+		<property name="cacheProvider">
+			<ref bean="osCacheProvider" />
+		</property>
+		<property name="regionName">
+			<value>WorkFlowCache</value>
+		</property>
+		<property name="properties">
+			<!-- These values can be set in oscache.properties also -->
+			<props>
+				<prop key="WorkFlowCache.capacity">500</prop>
+				<prop key="WorkFlowCache.period">1000</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="WorkFlowRowMapper" class="com.timesontransfar.common.workflow.model.service.impl.WorkFlowRowMapper">
+		<property name="sqlUtil">
+			<ref bean="sqlUtil" />
+		</property>
+	</bean>
+
+</beans>

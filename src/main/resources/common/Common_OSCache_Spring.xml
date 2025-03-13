@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="hashtableCacheProvider" class="com.timesontransfar.common.cache.providers.HashtableCacheProvider">
+        	<property name="open"><value>true</value></property>
+    </bean>
+
+    <bean id="osCacheProvider" class="com.timesontransfar.common.cache.providers.OSCacheProvider">
+    	<property name="open"><value>true</value></property>
+    </bean>
+
+    <bean id="osCacheProviderForDisplay" class="com.timesontransfar.common.cache.providers.OSCacheProvider">
+    	<property name="open"><value>true</value></property>
+    </bean>
+
+    <bean id="ehCacheProvider" class="com.timesontransfar.common.cache.providers.EhCacheProvider">
+    	<property name="open"><value>true</value></property>
+    </bean>
+
+</beans>

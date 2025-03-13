@@ -1,0 +1,105 @@
+---
+- name: check filePath.
+  fail:
+    msg: "filePath is not empty."
+  when: local_file_path == "" or dest_file_path == ""
+
+- name: mkdir file list
+  become: yes
+  become_method: su
+  file:
+    path: "{{ item }}"
+    owner: vmuser
+    group: vmuser
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ dest_file_path }}"
+
+#- name: stopped firewalld
+#  become: yes
+#  become_method: su
+#  systemd:
+#    name: firewalld
+#    state: stopped
+#    enabled: yes
+#    daemon_reload: yes
+
+- name: get fileName
+  tags: 
+    - kill
+    - run
+    - run_dr
+  set_fact:
+    file_name: "{{ local_file_path | regex_replace('^(.*)/','') }}"
+
+- name: print fileName.
+  tags: 
+    - kill
+    - run
+    - run_dr
+  debug:
+    msg: "file name: {{ file_name }}"
+
+- name: copy projectFile
+  copy: "src={{ local_file_path }} dest={{ file_path }} backup=yes"
+
+- name: get pid
+  tags: 
+    - kill
+  shell: "ps -ef | grep -v grep | grep {{ file_name }} | grep formal | awk '{print $2}'"
+  register: jar_pid
+
+- name: kill pid
+  tags: 
+    - kill
+  shell: "kill {{ item }}"
+  with_items: "{{ jar_pid.stdout_lines }}"
+
+
+- wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+    timeout: 60
+  with_items: "{{ jar_pid.stdout_lines }}"
+  ignore_errors: yes
+  tags: 
+    - kill
+  register: killed_processes
+
+- name: Force kill stuck processes
+  tags: 
+    - kill
+  shell: "kill -9 {{ item }}"
+  with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+
+
+
+- name: set javaagent
+  tags: 
+    - run
+    - run_dr
+  set_fact:
+    javaagent : ""
+  when: common.flag != "1"
+
+
+- name: set mysql  pro config, Disaster recovery database
+  tags: 
+    - run_dr
+  set_fact:
+    mysql_jdbcurl_config : "--spring.datasource-mysql.jdbc-url={{mysql_pro_drflag_parameter}}"
+  when: drflag == "dr"  and  platform_name != "ty_com_yun"
+
+- name: set mysql  pre config, Disaster recovery database
+  tags: 
+    - run_dr
+  set_fact:
+    mysql_jdbcurl_config : "--spring.datasource-mysql.jdbc-url={{mysql_pre_drflag_parameter}}"
+  when: drflag == "dr"  and  platform_name == "ty_com_yun"
+
+- name: run
+  tags: 
+    - run
+    - run_dr
+  shell: "nohup java {{ javaagent }} -jar {{ file_path }}{{ file_name }} --spring.profiles.active={{ common.active }} --spring.cloud.inetutils.preferred-networks={{ exclusive_address }}  {{ mysql_jdbcurl_config }}&"

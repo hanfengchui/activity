@@ -1,0 +1,114 @@
+---
+all:
+  hosts:
+    cf4.yz:
+      ansible_host: 173.16.10.4
+    cf5.yz:
+      ansible_host: 173.16.10.5
+    cf6.yz:
+      ansible_host: 173.16.10.6
+    cf7.yz:
+      ansible_host: 173.16.10.7
+    cf8.yz:
+      ansible_host: 173.16.10.8
+    cf9.yz:
+      ansible_host: 173.16.10.9
+    cf10.yz:
+      ansible_host: 173.16.10.10
+    cf11.yz:
+      ansible_host: 173.16.10.11
+    cf12.yz:
+      ansible_host: 173.16.10.12
+    cf13.yz:
+      ansible_host: 173.16.10.13
+    cf14.yz:
+      ansible_host: 173.16.10.14
+    cf15.yz:
+      ansible_host: 173.16.10.15
+    cf16.yz:
+      ansible_host: 173.16.10.16
+    cf17.yz:
+      ansible_host: 173.16.10.17
+    cf18.yz:
+      ansible_host: 173.16.10.18
+    cf19.yz:
+      ansible_host: 173.16.10.19
+    cf20.yz:
+      ansible_host: 173.16.10.20
+    cf21.yz:
+      ansible_host: 173.16.10.21
+    cf22.yz:
+      ansible_host: 173.16.10.22
+    cf23.yz:
+      ansible_host: 173.16.10.23
+    cf24.yz:
+      ansible_host: 173.16.10.24
+    cf25.yz:
+      ansible_host: 173.16.10.25
+    cf26.yz:
+      ansible_host: 173.16.10.26
+    cf27.yz:
+      ansible_host: 173.16.10.27
+    cf28.yz:
+      ansible_host: 173.16.10.28
+    cf29.yz:
+      ansible_host: 173.16.10.29
+    cf30.yz:
+      ansible_host: 173.16.10.30
+    cf31.yz:
+      ansible_host: 173.16.10.31
+    cf32.yz:
+      ansible_host: 173.16.10.32
+    cf33.yz:
+      ansible_host: 173.16.10.33
+    cf34.yz:
+      ansible_host: 173.16.10.34
+    cf35.yz:
+      ansible_host: 173.16.10.35
+    cf36.yz:
+      ansible_host: 173.16.10.36
+    cf37.yz:
+      ansible_host: 173.16.10.37
+    cf38.yz:
+      ansible_host: 173.16.10.38
+    cf39.yz:
+      ansible_host: 173.16.10.39
+  children:
+    yz_yun:
+      hosts:
+        cf4.yz:
+        cf5.yz:
+        cf6.yz:
+        cf7.yz:
+        cf8.yz:
+        cf9.yz:
+        cf10.yz:
+        cf11.yz:
+        cf12.yz:
+        cf13.yz:
+        cf14.yz:
+        cf15.yz:
+        cf16.yz:
+        cf17.yz:
+        cf18.yz:
+        cf19.yz:
+        cf20.yz:
+        cf21.yz:
+        cf22.yz:
+        cf23.yz:
+        cf24.yz:
+        cf25.yz:
+        cf26.yz:
+        cf27.yz:
+        cf28.yz:
+        cf29.yz:
+        cf30.yz:
+        cf31.yz:
+        cf32.yz:
+        cf33.yz:
+        cf34.yz:
+        cf35.yz:
+        cf36.yz:
+        cf37.yz:
+        cf38.yz:
+        cf39.yz:

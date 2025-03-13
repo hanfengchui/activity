@@ -1,0 +1,291 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.transfar.custom</groupId>
+		<artifactId>CustomServiceCloud</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>custom-activiti</artifactId>
+	<properties>
+		<bitwalker.version>1.19</bitwalker.version>
+	</properties>
+	
+	<dependencies>
+
+	  <!--缓存-->
+	  <dependency>
+		  <groupId>com.transfar</groupId>
+		  <artifactId>jscsc-redis</artifactId>
+		  <version>1.0-SNAPSHOT</version>
+		  <exclusions>
+			  <exclusion>
+				  <groupId>redis.clients</groupId>
+				  <artifactId>jedis</artifactId>
+			  </exclusion>
+			  <exclusion>
+			  		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-data-redis</artifactId>
+			  </exclusion>
+		  </exclusions>
+	  </dependency>
+
+
+	  <dependency>
+		  <groupId>redis.clients</groupId>
+		  <artifactId>jedis</artifactId>
+		  <version>2.9.0</version> <!--$NO-MVN-MAN-VER$-->
+	  </dependency>
+	  <dependency>
+		  <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-redis</artifactId>
+		  <version>2.2.5.RELEASE</version> <!--$NO-MVN-MAN-VER$-->
+	  </dependency>
+
+		<dependency>
+			<groupId>com.transfar.custom</groupId>
+			<artifactId>api-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		
+		<!-- 基础标配 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- 基础标配 -->
+		
+		<!-- Spring Cloud Begin -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.alibaba</groupId>
+            		<artifactId>fastjson</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+         <!-- open feign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!-- Spring Cloud End -->
+		
+		<!-- 热部署 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>com.timesontransfar.jxl</groupId>
+			<artifactId>jxl</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.pinyin4j</groupId>
+			<artifactId>pinyin4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ideal.sso</groupId>
+			<artifactId>sso</artifactId>
+			<version>1.1</version>
+		</dependency>
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        
+        <!--jdbc -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<!--jdbc -->
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+		</dependency>
+        
+        <!-- axis 依赖开始 -->
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis-jaxrpc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-kernel</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-adb</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<!-- axis 依赖结束 -->
+		
+        <dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opensymphony.oscache</groupId>
+			<artifactId>com.springsource.com.opensymphony.oscache</artifactId>
+			<version>2.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.log4j</groupId>
+					<artifactId>
+						com.springsource.org.apache.log4j
+					</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>2.1.12</version>
+		</dependency>
+
+	    <!--Token生成与解析-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+		<!-- 解析客户端操作系统、浏览器等 -->
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>${bitwalker.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.github.openfeign</groupId>
+		    <artifactId>feign-httpclient</artifactId>
+		    <version>11.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!--单点登录依赖-->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.8.2</version>
+		</dependency>
+		<!--数据库加密-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>custom-activiti</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.2.4.RELEASE</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+		        <groupId>org.owasp</groupId>
+		        <artifactId>dependency-check-maven</artifactId>
+		        <version>7.1.1</version>
+		        <configuration>
+					<autoUpdate>true</autoUpdate>
+		        </configuration>
+		        <executions>
+		            <execution>
+		                <goals>
+		                    <goal>check</goal>
+		                </goals>
+		            </execution>
+		        </executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

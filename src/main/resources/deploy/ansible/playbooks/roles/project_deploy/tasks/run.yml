@@ -1,0 +1,26 @@
+---
+- name: set javaagent
+  set_fact:
+    javaagent : ""
+  when: common.flag != "1"
+
+- name: set JAVA_OPTS
+  set_fact:
+    JAVA_OPTS : ""
+  when: common.flag != "1"
+
+#- name: run
+#  shell: "nohup java {{ javaagent }} -jar {{ file_path }}{{ file_name }} --spring.profiles.active={{ common.active }} --spring.cloud.inetutils.preferred-networks={{ exclusive_address }} &"
+
+- name: run
+  shell: "cd {{dest_file_path}}/{{ project_name }} && nohup java {{ javaagent }} {{ JAVA_OPTS }}   org.springframework.boot.loader.JarLauncher --spring.profiles.active={{ common.active }} --target={{ dest_file_path }} --spring.cloud.inetutils.preferred-networks={{ exclusive_address }} &"
+
+- name: run get pid
+  shell: "ps -ef | grep -v grep | grep {{ file_name }} | grep formal "
+  register: run
+
+- name: print run
+  debug:
+    var: run.stdout_lines
+
+- debug: msg="run done"

@@ -1,0 +1,30 @@
+---
+- name: get fileName
+  set_fact:
+    file_name: "{{ local_file_path | regex_replace('^(.*)/','') }}"
+
+- name: print fileName.
+  debug:
+    msg: "file name: {{ file_name }}"
+
+- name: get pid
+  shell: "ps -ef | grep -v grep | grep {{ file_name }} | grep formal | awk '{print $2}'"
+  register: jar_pid
+
+- name: kill pid
+  shell: "kill {{ item }}"
+  with_items: "{{ jar_pid.stdout_lines }}"
+
+- wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+    timeout: 60
+  with_items: "{{ jar_pid.stdout_lines }}"
+  ignore_errors: yes
+  register: killed_processes
+
+- name: Force kill stuck processes
+  shell: "kill -9 {{ item }}"
+  with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+
+- debug: msg="kill done"

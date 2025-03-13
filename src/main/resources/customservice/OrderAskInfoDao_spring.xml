@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="orderAskInfoDao"
+		class="com.timesontransfar.customservice.orderask.dao.impl.OrderAskInfoDaoImpl">
+		<property name="insertServiceTrackSql">
+			<value>
+				INSERT INTO cc_service_track
+				  (new_order_id, old_order_id, track_type)
+				VALUES
+				  (?, ?, ?)
+			</value>
+		</property>
+		<property name="saveServOrderSql">
+			<value>
+				INSERT INTO CC_SERVICE_ORDER_ASK (SERVICE_ORDER_ID,
+				ORDER_VESION,REGION_ID,REGION_NAME,SERVICE_TYPE,SERVICE_TYPE_DESC,
+				CALL_SERIAL_NO,SOURCE_NUM,CUST_GUID,RELA_MAN,RELA_TYPE,PROD_NUM,RELA_INFO,ACCEPT_CHANNEL_ID,
+				ACCEPT_CHANNEL_DESC,ACCEPT_COME_FROM,ACCEPT_COME_FROM_DESC,ACCEPT_STAFF_ID,ACCEPT_STAFF_NAME,
+				ACCEPT_ORG_ID,ACCEPT_ORG_NAME,CUST_SERV_GRADE,CUST_SERV_GRADE_DESC,URGENCY_GRADE,
+				URGENCY_GRADE_DESC,CUST_EMOTION,CUST_EMOTION_DESC,ACCEPT_COUNT,ORDER_STATU,ORDER_LIMIT_TIME,
+				SUB_SHEET_COUNT,HANGUP_TIME_COUNT,PRE_ALARM_VALUE,ALARM_VALUE,VERIFY_REASON_ID,
+				VERIFY_REASON_NAME,REPLY_CONTENT,COMMENTS,NET_FLAG,MONTH_FLAG,MODIFY_DATE,FINISH_DATE,
+				BOOKING_DATE,HANGUP_START_TIME,ACCEPT_DATE , CUST_GROUP,
+				CUST_GROUP_DESC, SERVICE_DATE,
+				SERVICE_DATE_DESC,ORDER_STATU_DESC,ASSIST_SELL_NO,YS_QUALIATIVE_ID,YS_QUALIATIVE_NAME
+				,TS_KEY_WORD
+				,TS_KEY_WORD_DESC,COME_CATEGORY,COME_CATEGORY_NAME,AREA_ID,AREA_NAME,SUB_STATION_ID,SUB_STATION_NAME,SEND_TO_ORG_ID,SEND_TO_ORG_NAME
+				,PRODUCT_TYPE,PRODUCT_TYPE_NAME,NODE_ID,SERVICE_KEY,CHANNEL_DETAIL_ID,CHANNEL_DETAIL_DESC,
+				IS_OWNER,MORE_RELA_INFO)
+				VALUES
+				(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+				str_to_date(?, '%Y-%m-%d %H:%i:%s'), str_to_date(?, '%Y-%m-%d %H:%i:%s'), str_to_date(?, '%Y-%m-%d %H:%i:%s'), str_to_date(?, '%Y-%m-%d %H:%i:%s'),
+				now() ,?,?,?,?,?,?,?,? , ? ,?,?,?,?,?,?,?,?,?,?,?,?,?,
+				?,?,?,?)
+			</value>
+		</property>
+		<property name="queryOrderAskInfoByStatuSql">
+			<value>
+				SELECT A.* FROM CC_SERVICE_ORDER_ASK A, TRM_REGION B,
+				TSM_STAFF C WHERE A.ORDER_STATU = ? AND A.REGION_ID =
+				B.REGION_ID AND A.ACCEPT_STAFF_ID = C.STAFF_ID(+)
+			</value>
+		</property>
+		<property name="queryOrderAskInfoByStatuHisSql">
+			<value>
+				SELECT * FROM cc_service_order_ask_his a WHERE
+				a.order_statu = ?
+			</value>
+		</property>
+
+		<property name="queryAskInfoByIdMonthSql">
+			<value>
+				SELECT * FROM CC_SERVICE_ORDER_ASK A WHERE
+				A.SERVICE_ORDER_ID = ? AND A.REGION_ID = ?
+			</value>
+		</property>
+		<property name="queryAskInfoByIdMonthHisSql">
+			<value>
+				SELECT * FROM CC_SERVICE_ORDER_ASK_HIS A WHERE
+				A.SERVICE_ORDER_ID = ? AND A.ORDER_VESION = ? AND
+				A.REGION_ID = ?
+			</value>
+		</property>
+
+		<property name="queryOrderAskInfoSql">
+			<value>
+				SELECT * FROM cc_service_order_ask a WHERE
+				a.service_order_id = ?
+			</value>
+		</property>
+		<property name="queryOrderAskInfoHisSql">
+			<value>
+				SELECT s.* FROM cc_service_order_ask_his s where s.service_order_id = ? ORDER BY s.order_vesion desc limit 1
+			</value>
+		</property>
+		<property name="delOrderAskInfoSql">
+			<value>
+				DELETE a FROM cc_service_order_ask a WHERE
+				a.service_order_id = ? AND A.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="updateOrderStatuSql">
+			<value>
+				UPDATE CC_SERVICE_ORDER_ASK B SET B.ORDER_STATU =
+				?,B.ORDER_STATU_DESC=?,B.MODIFY_DATE=now() WHERE
+				B.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateOrderHisStatuSql">
+			<value>
+				UPDATE CC_SERVICE_ORDER_ASK_HIS B SET B.ORDER_STATU =
+				?,B.ORDER_STATU_DESC=? WHERE B.REGION_ID=? AND
+				B.SERVICE_ORDER_ID = ? AND B.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="updateSubSheetHoldInfoSql">
+			<value>
+UPDATE cc_service_order_ask a
+   SET a.sub_sheet_count   = ?,
+       a.hangup_start_time = str_to_date(?, '%Y-%m-%d %H:%i:%s'),
+       a.hangup_time_count = ?
+ WHERE a.service_order_id = ?
+   AND EXISTS (SELECT 1
+          FROM cc_service_label b
+         WHERE b.service_order_id = a.service_order_id
+           AND b.dx_finish_date IS NULL)
+			</value>
+		</property>
+		<property name="updateOrderAskInfoSql">
+			<value>
+				UPDATE CC_SERVICE_ORDER_ASK T SET T.ORDER_VESION = ?,
+				T.REGION_ID = ?, T.REGION_NAME = ?, T.SERVICE_TYPE = ?,
+				T.SERVICE_TYPE_DESC = ?, T.CALL_SERIAL_NO = ?,
+				T.SOURCE_NUM = ?, T.CUST_GUID = ?, T.RELA_MAN = ?,
+				T.RELA_TYPE = ?, T.PROD_NUM = ?, T.RELA_INFO = ?,
+				T.ACCEPT_CHANNEL_ID = ?, T.ACCEPT_CHANNEL_DESC = ?,
+				T.ACCEPT_COME_FROM = ?, T.ACCEPT_COME_FROM_DESC = ?,
+				T.ACCEPT_STAFF_ID = ?, T.ACCEPT_STAFF_NAME = ?,
+				T.ACCEPT_ORG_ID = ?, T.ACCEPT_ORG_NAME = ?,
+				T.ACCEPT_DATE = str_to_date(?, '%Y-%m-%d %H:%i:%s'),
+				T.MODIFY_DATE = now(), T.FINISH_DATE = str_to_date(?, '%Y-%m-%d %H:%i:%s'), T.CUST_SERV_GRADE = ?,
+				T.CUST_SERV_GRADE_DESC = ?, T.URGENCY_GRADE = ?,
+				T.URGENCY_GRADE_DESC = ?, T.BOOKING_DATE = str_to_date(?, '%Y-%m-%d %H:%i:%s'), T.CUST_EMOTION = ?,
+				T.CUST_EMOTION_DESC = ?, T.ACCEPT_COUNT = ?,
+				T.ORDER_STATU = ?, T.ORDER_LIMIT_TIME = ?,
+				T.SUB_SHEET_COUNT = ?, T.HANGUP_START_TIME = str_to_date(?, '%Y-%m-%d %H:%i:%s'), T.HANGUP_TIME_COUNT = ?,
+				T.PRE_ALARM_VALUE = ?, T.ALARM_VALUE = ?,
+				T.VERIFY_REASON_ID = ?, T.VERIFY_REASON_NAME = ?,
+				T.REPLY_CONTENT = ?, T.COMMENTS = ?, T.NET_FLAG = ?,
+				T.SERVICE_DATE = ?, T.SERVICE_DATE_DESC = ?,
+				T.CUST_GROUP = ?, T.CUST_GROUP_DESC = ? ,
+				T.ASSIST_SELL_NO = ? , T.TS_KEY_WORD = ? , T.TS_KEY_WORD_DESC = ?,
+				T.COME_CATEGORY=?,T.COME_CATEGORY_NAME=? ,
+				T.AREA_ID=?, T.AREA_NAME=?, T.SUB_STATION_ID=?, T.SUB_STATION_NAME=?, T.SEND_TO_ORG_ID =?, T.SEND_TO_ORG_NAME =?,
+				T.PRODUCT_TYPE=?, T.PRODUCT_TYPE_NAME=?, T.NODE_ID=?,
+				T.SERVICE_KEY=?, T.CHANNEL_DETAIL_ID=?, T.CHANNEL_DETAIL_DESC=?,
+				T.IS_OWNER=?, T.MORE_RELA_INFO=?
+				WHERE T.SERVICE_ORDER_ID=? AND T.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="saveServOrderHisByOrderIdSql">
+			<value>
+				INSERT INTO CC_SERVICE_ORDER_ASK_HIS (SERVICE_ORDER_ID,
+				ORDER_VESION,REGION_ID,REGION_NAME,SERVICE_TYPE,SERVICE_TYPE_DESC,
+				CALL_SERIAL_NO,SOURCE_NUM,CUST_GUID,RELA_MAN,RELA_TYPE,PROD_NUM,RELA_INFO,ACCEPT_CHANNEL_ID,
+				ACCEPT_CHANNEL_DESC,ACCEPT_COME_FROM,ACCEPT_COME_FROM_DESC,ACCEPT_STAFF_ID,ACCEPT_STAFF_NAME,
+				ACCEPT_ORG_ID,ACCEPT_ORG_NAME,CUST_SERV_GRADE,CUST_SERV_GRADE_DESC,URGENCY_GRADE,
+				URGENCY_GRADE_DESC,CUST_EMOTION,CUST_EMOTION_DESC,ACCEPT_COUNT,ORDER_STATU,ORDER_LIMIT_TIME,
+				SUB_SHEET_COUNT,HANGUP_TIME_COUNT,PRE_ALARM_VALUE,ALARM_VALUE,VERIFY_REASON_ID,
+				VERIFY_REASON_NAME,REPLY_CONTENT,COMMENTS,NET_FLAG,MONTH_FLAG,MODIFY_DATE,FINISH_DATE,
+				BOOKING_DATE,HANGUP_START_TIME,ACCEPT_DATE , CUST_GROUP,
+				CUST_GROUP_DESC, SERVICE_DATE,
+				SERVICE_DATE_DESC,ORDER_STATU_DESC,ASSIST_SELL_NO,YS_QUALIATIVE_ID,YS_QUALIATIVE_NAME
+				,TS_KEY_WORD ,
+				TS_KEY_WORD_DESC,COME_CATEGORY,COME_CATEGORY_NAME,AREA_ID,AREA_NAME,SUB_STATION_ID,SUB_STATION_NAME,SEND_TO_ORG_ID,SEND_TO_ORG_NAME
+				,PRODUCT_TYPE,PRODUCT_TYPE_NAME,NODE_ID,SERVICE_KEY,IF_EXCEED_TIME,AGAIN_RESTORE,
+				CHANNEL_DETAIL_ID,CHANNEL_DETAIL_DESC,IS_OWNER,MORE_RELA_INFO
+				) SELECT B.SERVICE_ORDER_ID, B.ORDER_VESION,
+				B.REGION_ID, B.REGION_NAME, B.SERVICE_TYPE,
+				B.SERVICE_TYPE_DESC, B.CALL_SERIAL_NO, B.SOURCE_NUM,
+				B.CUST_GUID, B.RELA_MAN, B.RELA_TYPE, B.PROD_NUM,
+				B.RELA_INFO, B.ACCEPT_CHANNEL_ID, B.ACCEPT_CHANNEL_DESC,
+				B.ACCEPT_COME_FROM, B.ACCEPT_COME_FROM_DESC,
+				B.ACCEPT_STAFF_ID, B.ACCEPT_STAFF_NAME, B.ACCEPT_ORG_ID,
+				B.ACCEPT_ORG_NAME, B.CUST_SERV_GRADE,
+				B.CUST_SERV_GRADE_DESC, B.URGENCY_GRADE,
+				B.URGENCY_GRADE_DESC, B.CUST_EMOTION,
+				B.CUST_EMOTION_DESC, B.ACCEPT_COUNT, B.ORDER_STATU,
+				B.ORDER_LIMIT_TIME, B.SUB_SHEET_COUNT,
+				B.HANGUP_TIME_COUNT, B.PRE_ALARM_VALUE, B.ALARM_VALUE,
+				B.VERIFY_REASON_ID, B.VERIFY_REASON_NAME,
+				B.REPLY_CONTENT, B.COMMENTS, B.NET_FLAG, B.MONTH_FLAG,
+				B.MODIFY_DATE, B.FINISH_DATE, B.BOOKING_DATE,
+				B.HANGUP_START_TIME, B.ACCEPT_DATE, B.CUST_GROUP,
+				B.CUST_GROUP_DESC, B.SERVICE_DATE, B.SERVICE_DATE_DESC,
+				B.ORDER_STATU_DESC, B.ASSIST_SELL_NO,
+				B.YS_QUALIATIVE_ID, B.YS_QUALIATIVE_NAME , B.TS_KEY_WORD,
+				B.TS_KEY_WORD_DESC,B.COME_CATEGORY,B.COME_CATEGORY_NAME
+				,B.AREA_ID,B.AREA_NAME,B.SUB_STATION_ID,B.SUB_STATION_NAME,B.SEND_TO_ORG_ID,B.SEND_TO_ORG_NAME
+				,B.PRODUCT_TYPE,B.PRODUCT_TYPE_NAME,B.NODE_ID,B.SERVICE_KEY
+				,B.IF_EXCEED_TIME,B.AGAIN_RESTORE, B.CHANNEL_DETAIL_ID, B.CHANNEL_DETAIL_DESC,
+				B.IS_OWNER, B.MORE_RELA_INFO FROM
+				CC_SERVICE_ORDER_ASK B WHERE B.SERVICE_ORDER_ID = ? AND
+				B.MONTH_FLAG=?
+			</value>
+		</property>
+
+		<property name="queryOrderAskInfoByAlarmSql">
+			<value>
+				SELECT A.* FROM CC_SERVICE_ORDER_ASK
+				A,CC_ORDER_CUST_INFO B WHERE A.REGION_ID=? AND
+				A.CUST_GUID = B.CUST_GUID AND (A.ORDER_STATU=700000101
+				OR A.ORDER_STATU=700000102) AND A.ACCEPT_DATE &gt;
+				TO_DATE(?, 'yyyy-mm-dd HH24:MI:SS') AND A.ACCEPT_DATE
+				&lt; TO_DATE(?, 'yyyy-mm-dd HH24:MI:SS')
+			</value>
+		</property>
+		<property name="updateAcceptDateSql">
+			<value>
+				UPDATE cc_service_order_ask
+				   SET accept_date = now()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectAcceptDateSql">
+			<value>
+				SELECT DATE_FORMAT(accept_date,'%Y-%m-%d %H:%i:%s') accept_date
+				  FROM cc_service_order_ask
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateOrderLimitTimeSql">
+			<value>
+				UPDATE cc_service_order_ask
+				   SET order_limit_time = ?
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="insertServiceWisdomTypeSql">
+			<value>
+				INSERT INTO cc_service_wisdom_type (order_id_old, hold_flag, send_flag, create_date) VALUES (?, ?, ?, NOW())
+			</value>
+		</property>
+		<property name="insertServiceWisdomTypeHisSql">
+			<value>
+INSERT INTO cc_service_wisdom_type_his
+  (order_id_old, hold_flag, send_flag, create_date, result_code, result_msg, scenario, wisdom_type, unifiedflag, oper_date, order_id_new)
+  SELECT order_id_old,
+         hold_flag,
+         send_flag,
+         create_date,
+         result_code,
+         result_msg,
+         scenario,
+         wisdom_type,
+         unifiedflag,
+         oper_date,
+         order_id_new
+    FROM cc_service_wisdom_type
+   WHERE order_id_old = ?
+			</value>
+		</property>
+		<property name="deleteServiceWisdomTypeSql">
+			<value>
+				DELETE cc_service_wisdom_type WHERE order_id_old = ?
+			</value>
+		</property>
+		<property name="updateServiceWisdomTypeSql">
+			<value>
+UPDATE cc_service_wisdom_type
+   SET result_code = ?, result_msg = ?, scenario = ?, wisdom_type = ?, unifiedflag = ?, oper_date = NOW(), order_id_new = ?
+ WHERE order_id_old = ?
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="serviceContentDao" class="com.timesontransfar.customservice.orderask.dao.impl.ServiceOrderContentDaoImpl">
+	    <property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveServContentSql">
+			<value>
+				INSERT INTO CC_SERVICE_CONTENT_ASK(
+				SERVICE_ORDER_ID,ORDER_VESION,REGION_ID,REGION_NAME,SERVICE_TYPE,
+				SERVICE_TYPE_DESC,APPEAL_PROD_ID,APPEAL_PROD_NAME,APPEAL_REASON_ID,
+				APPEAL_REASON_DESC,APPEAL_DETAIL_ID,APPEAL_DETAIL_DESC,
+				PROD_NUM,ACCEPT_CONTENT,CUST_EXPECT,BE_COMPLAINT_ORD,
+				BE_COMPLAINT_ORD_DESC,NUM_CUSTOMER_SATISFY
+				,MONTH_FLAG,APPEAL_CHILD,APPEAL_CHILD_DESC,FOU_GRADE_CATALOG,FOU_GRADE_CATALOG_DESC
+				,TERMI_PRODUCT_ID,TERMI_PRODUCT_DESC,TERMI_PRODUCT_TYPE
+				,FIVE_GRADE_CATALOG,FIVE_GRADE_CATALOG_DESC,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DESC
+				,OUTLETS_NAME,OUTLETS_GUID,SERVICE_TYPE_DETAIL,OUTLETS_ADDRESS,OUTLETS_AR_CODE,CHANNEL_TP_NAME,FIVE_ORDER,FIVE_ORDER_DESC,BEST_ORDER,BEST_ORDER_DESC
+				,PROD_ONE,PROD_ONE_DESC,PROD_TWO,PROD_TWO_DESC,DEVT_CHS_ONE,DEVT_CHS_ONE_DESC,DEVT_CHS_TWO,DEVT_CHS_TWO_DESC,DEVT_CHS_THREE,DEVT_CHS_THREE_DESC,
+				DVLP_CHNL,DVLP_CHNL_NM,DISPUTE_CHNL,DISPUTE_CHNL_NM,DISPUTE_CHNL_1,DISPUTE_CHNL_1_NM,DISPUTE_CHNL_2,DISPUTE_CHNL_2_NM,DISPUTE_CHNL_3,DISPUTE_CHNL_3_NM
+				,OFFER_ID,OFFER_NAME
+				) VALUES (?, ?, ?, ?, ?, ?,
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+				, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+				,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="queryServContentSql">
+			<value>
+				SELECT * FROM cc_service_content_ask a WHERE
+				a.service_order_id = ?
+			</value>
+		</property>
+		<property name="queryServContentHisSql">
+			<value>
+				SELECT * FROM cc_service_content_ask_his a WHERE
+				a.service_order_id = ? AND A.ORDER_VESION=?
+			</value>
+		</property>
+		<property name="delServContentSql">
+			<value>
+				DELETE A FROM CC_SERVICE_CONTENT_ASK A WHERE
+				A.SERVICE_ORDER_ID = ? AND A.MONTH_FLAG=?
+			</value>
+		</property>
+
+		<property name="updateAccContSql">
+			<value>
+				UPDATE CC_SERVICE_CONTENT_ASK T SET T.ACCEPT_CONTENT =?,
+				T.NUM_CUSTOMER_SATISFY = T.NUM_CUSTOMER_SATISFY + 1
+				WHERE T.SERVICE_ORDER_ID = ? AND T.MONTH_FLAG = ?
+			</value>
+		</property>
+		
+		<property name="updateContentSql">
+			<value>
+				UPDATE CC_SERVICE_CONTENT_ASK T SET T.ACCEPT_CONTENT =? WHERE T.SERVICE_ORDER_ID = ? AND T.MONTH_FLAG = ?
+			</value>
+		</property>
+
+
+		<property name="updateServContentSql">
+			<value>
+				UPDATE CC_SERVICE_CONTENT_ASK T SET T.ORDER_VESION = ?,
+				T.REGION_ID = ?, T.REGION_NAME = ?, T.SERVICE_TYPE = ?,
+				T.SERVICE_TYPE_DESC = ?, 
+				T.APPEAL_PROD_ID = ?,T.APPEAL_PROD_NAME = ?, 
+				T.APPEAL_REASON_ID = ?,T.APPEAL_REASON_DESC = ?, 
+				T.APPEAL_DETAIL_ID = ?,T.APPEAL_DETAIL_DESC = ?,
+				T.FOU_GRADE_CATALOG=?,T.FOU_GRADE_CATALOG_DESC=?,
+				T.FIVE_GRADE_CATALOG=?,T.FIVE_GRADE_CATALOG_DESC=?,
+				T.SIX_GRADE_CATALOG=?,T.SIX_GRADE_CATALOG_DESC=?,
+				T.PROD_NUM = ?,	T.ACCEPT_CONTENT = ?, T.CUST_EXPECT = ?,
+				T.BE_COMPLAINT_ORD = ?, T.BE_COMPLAINT_ORD_DESC = ?,
+				T.NUM_CUSTOMER_SATISFY = ? , T.APPEAL_CHILD = ?
+				,T.APPEAL_CHILD_DESC = ?,				 
+				T.TERMI_PRODUCT_ID=?,
+				T.TERMI_PRODUCT_DESC=?, T.TERMI_PRODUCT_TYPE=?, T.SERVICE_TYPE_DETAIL=?,
+				T.OUTLETS_NAME = ?, T.OUTLETS_GUID = ?, T.OUTLETS_ADDRESS = ?, T.OUTLETS_AR_CODE = ?, T.CHANNEL_TP_NAME = ?, 
+				T.FIVE_ORDER = ?, T.FIVE_ORDER_DESC = ?, T.BEST_ORDER = ?, T.BEST_ORDER_DESC = ?
+				,PROD_ONE=?,PROD_ONE_DESC=?,PROD_TWO=?,PROD_TWO_DESC=?,DEVT_CHS_ONE=?,DEVT_CHS_ONE_DESC=?
+				,DEVT_CHS_TWO=?,DEVT_CHS_TWO_DESC=?,DEVT_CHS_THREE=?,DEVT_CHS_THREE_DESC=?,DVLP_CHNL=?,DVLP_CHNL_NM=?,
+				DISPUTE_CHNL=?,DISPUTE_CHNL_NM=?,DISPUTE_CHNL_1=?,DISPUTE_CHNL_1_NM=?,
+				DISPUTE_CHNL_2=?,DISPUTE_CHNL_2_NM=?,DISPUTE_CHNL_3=?,DISPUTE_CHNL_3_NM=?,OFFER_ID=?,OFFER_NAME=?
+				WHERE T.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="saveServContentHisByOrderIdSql">
+			<value>
+				INSERT INTO CC_SERVICE_CONTENT_ASK_HIS (
+				SERVICE_ORDER_ID,ORDER_VESION,REGION_ID,REGION_NAME,SERVICE_TYPE,
+				SERVICE_TYPE_DESC,APPEAL_PROD_ID,APPEAL_PROD_NAME,APPEAL_REASON_ID,
+				APPEAL_REASON_DESC,APPEAL_DETAIL_ID,APPEAL_DETAIL_DESC,
+				PROD_NUM,ACCEPT_CONTENT,CUST_EXPECT,BE_COMPLAINT_ORD,
+				BE_COMPLAINT_ORD_DESC,NUM_CUSTOMER_SATISFY
+				,MONTH_FLAG,APPEAL_CHILD,APPEAL_CHILD_DESC,FOU_GRADE_CATALOG,FOU_GRADE_CATALOG_DESC
+				,TERMI_PRODUCT_ID,TERMI_PRODUCT_DESC,TERMI_PRODUCT_TYPE,FIVE_GRADE_CATALOG,FIVE_GRADE_CATALOG_DESC,
+				SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DESC,OUTLETS_NAME,OUTLETS_GUID,SERVICE_TYPE_DETAIL,OUTLETS_ADDRESS,OUTLETS_AR_CODE,CHANNEL_TP_NAME,
+				FIVE_ORDER,FIVE_ORDER_DESC,BEST_ORDER,BEST_ORDER_DESC
+				,PROD_ONE,PROD_ONE_DESC,PROD_TWO,PROD_TWO_DESC,DEVT_CHS_ONE,DEVT_CHS_ONE_DESC,DEVT_CHS_TWO,DEVT_CHS_TWO_DESC,DEVT_CHS_THREE,DEVT_CHS_THREE_DESC,
+				DVLP_CHNL,DVLP_CHNL_NM,DISPUTE_CHNL,DISPUTE_CHNL_NM,DISPUTE_CHNL_1,DISPUTE_CHNL_1_NM,DISPUTE_CHNL_2,DISPUTE_CHNL_2_NM,DISPUTE_CHNL_3,DISPUTE_CHNL_3_NM
+				,OFFER_ID,OFFER_NAME
+				)SELECT
+				SERVICE_ORDER_ID,ORDER_VESION,REGION_ID,REGION_NAME,SERVICE_TYPE,
+				SERVICE_TYPE_DESC,APPEAL_PROD_ID,APPEAL_PROD_NAME,APPEAL_REASON_ID,
+				APPEAL_REASON_DESC,APPEAL_DETAIL_ID,APPEAL_DETAIL_DESC,
+				PROD_NUM,ACCEPT_CONTENT,CUST_EXPECT,BE_COMPLAINT_ORD,
+				BE_COMPLAINT_ORD_DESC,NUM_CUSTOMER_SATISFY
+				,MONTH_FLAG,APPEAL_CHILD,APPEAL_CHILD_DESC,FOU_GRADE_CATALOG,FOU_GRADE_CATALOG_DESC
+				,TERMI_PRODUCT_ID,TERMI_PRODUCT_DESC,TERMI_PRODUCT_TYPE,FIVE_GRADE_CATALOG,FIVE_GRADE_CATALOG_DESC
+				,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DESC,OUTLETS_NAME,OUTLETS_GUID,SERVICE_TYPE_DETAIL,OUTLETS_ADDRESS,OUTLETS_AR_CODE,CHANNEL_TP_NAME,
+				FIVE_ORDER,FIVE_ORDER_DESC,BEST_ORDER,BEST_ORDER_DESC
+				,PROD_ONE,PROD_ONE_DESC,PROD_TWO,PROD_TWO_DESC,DEVT_CHS_ONE,DEVT_CHS_ONE_DESC,DEVT_CHS_TWO,DEVT_CHS_TWO_DESC,DEVT_CHS_THREE,DEVT_CHS_THREE_DESC,
+				DVLP_CHNL,DVLP_CHNL_NM,DISPUTE_CHNL,DISPUTE_CHNL_NM,DISPUTE_CHNL_1,DISPUTE_CHNL_1_NM,DISPUTE_CHNL_2,DISPUTE_CHNL_2_NM,DISPUTE_CHNL_3,DISPUTE_CHNL_3_NM
+				,OFFER_ID,OFFER_NAME
+				FROM CC_SERVICE_CONTENT_ASK WHERE
+				CC_SERVICE_CONTENT_ASK.SERVICE_ORDER_ID = ? AND
+				CC_SERVICE_CONTENT_ASK.MONTH_FLAG=?
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="orderCustInfoDao" class="com.timesontransfar.customservice.orderask.dao.impl.OrderCustInfoDaoImpl">
+	    <property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveOrderCustSql">
+			<value>
+				INSERT INTO CC_ORDER_CUST_INFO (CUST_GUID, REGION_ID,
+				CUST_NAME, CRM_CUST_ID,CUST_SEX, FAX_NUM,
+				E_MAIL,MAIL_ADDR, POST_CODE,ID_TYPE,ID_CARD,CUST_TYPE,
+				CUST_TYPE_NAME,CUST_SERV_GRADE,CUST_SERV_GRADE_NAME,CUST_BRAND,
+				CUST_BRAND_DESC,CUST_CONTENT,CUST_CONTENT_DESC,PROD_STATUS,PROD_STATUS_DESC,
+				TRADE_TYPE,TRADE_TYPE_DESC,PROD_TYPE,PROD_TYPE_DESC,BRANCH_NO,INSTALL_DATE,
+				INSTALL_ADDR,ADDONES_INFO,MONTH_FLAG,SERVICE_GRANDE,SERVICE_GRANDE_DESC,ODSCITY,HIGH_WARN_ID,HIGH_WARN_DESC,CUSTAGE,
+				PROD_INST_ID,ADDRESS_ID,ADDRESS_DESC,NUM_RANK,IS_REALNAME,ID_TYPE_NAME
+				) VALUES(?, ?,?,?,?,?,?,?, ?, ?, ?, ?, ?,?,?, ?,?,?,
+				?,?, ?,?,?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="queryCustByGuidSql">
+			<value>
+				SELECT * FROM cc_order_cust_info t WHERE t.cust_guid=?
+			</value>
+		</property>
+		<property name="queryCustHisByGuidSql">
+			<value>
+				SELECT * FROM cc_order_cust_info_his t WHERE
+				t.cust_guid=?
+			</value>
+		</property>
+		<property name="queryCustByOrderId">
+			<value>
+				SELECT a.* FROM CC_ORDER_CUST_INFO A,
+				CC_SERVICE_ORDER_ASK B WHERE b.service_order_id = ? AND
+				A.CUST_GUID = B.CUST_GUID
+			</value>
+		</property>
+		<property name="delCustByCustGuid">
+			<value>
+				DELETE A FROM CC_ORDER_CUST_INFO A WHERE A.CUST_GUID = ?
+				AND A.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="updateCustInfoSql">
+			<value>
+				UPDATE CC_ORDER_CUST_INFO T SET REGION_ID = ?, CUST_NAME
+				= ?, CRM_CUST_ID = ?, CUST_SEX = ?, FAX_NUM = ?, E_MAIL
+				= ?, MAIL_ADDR = ?, POST_CODE = ?, ID_TYPE = ?, ID_CARD
+				= ?, CUST_TYPE = ?, CUST_TYPE_NAME = ?, CUST_SERV_GRADE
+				= ?, CUST_SERV_GRADE_NAME = ?, CUST_BRAND = ?,
+				CUST_BRAND_DESC = ?, CUST_CONTENT = ?, CUST_CONTENT_DESC
+				= ?, HIGH_WARN_ID = ?, HIGH_WARN_DESC = ?, PROD_STATUS = ?, PROD_STATUS_DESC = ?, TRADE_TYPE =
+				?, TRADE_TYPE_DESC = ?, PROD_TYPE = ?, PROD_TYPE_DESC =
+				?, BRANCH_NO = ?, INSTALL_ADDR = ?, ADDONES_INFO = ?,
+				SERVICE_GRANDE = ?, SERVICE_GRANDE_DESC = ?,
+				INSTALL_DATE = ?, PROD_INST_ID = ?, ADDRESS_ID = ?, ADDRESS_DESC = ?, CUSTAGE = ?, NUM_RANK = ?, IS_REALNAME = ?, ID_TYPE_NAME = ?
+				WHERE T.CUST_GUID = ? AND T.MONTH_FLAG = ?
+			</value>
+		</property>
+		<property name="saveOrderCustHisByCustGudiSql">
+			<value>
+				INSERT INTO CC_ORDER_CUST_INFO_HIS (CUST_GUID,
+				REGION_ID, CUST_NAME, CRM_CUST_ID, CUST_SEX, FAX_NUM,
+				E_MAIL, MAIL_ADDR, POST_CODE, ID_TYPE, ID_CARD,
+				CUST_TYPE, CUST_TYPE_NAME, CUST_SERV_GRADE,
+				CUST_SERV_GRADE_NAME, CUST_BRAND, CUST_BRAND_DESC,
+				CUST_CONTENT, CUST_CONTENT_DESC, PROD_STATUS,
+				PROD_STATUS_DESC, TRADE_TYPE, TRADE_TYPE_DESC,
+				PROD_TYPE, PROD_TYPE_DESC, BRANCH_NO, INSTALL_DATE,
+				INSTALL_ADDR, ADDONES_INFO, MONTH_FLAG, SERVICE_GRANDE,
+				SERVICE_GRANDE_DESC,ODSCITY,HIGH_WARN_ID,HIGH_WARN_DESC,
+				PROD_INST_ID,ADDRESS_ID,ADDRESS_DESC,CUSTAGE,NUM_RANK,IS_REALNAME,ID_TYPE_NAME) SELECT B.CUST_GUID, B.REGION_ID,
+				B.CUST_NAME, B.CRM_CUST_ID, B.CUST_SEX, B.FAX_NUM,
+				B.E_MAIL, B.MAIL_ADDR, B.POST_CODE, B.ID_TYPE,
+				B.ID_CARD, B.CUST_TYPE, B.CUST_TYPE_NAME,
+				B.CUST_SERV_GRADE, B.CUST_SERV_GRADE_NAME, B.CUST_BRAND,
+				B.CUST_BRAND_DESC, B.CUST_CONTENT, B.CUST_CONTENT_DESC,
+				B.PROD_STATUS, B.PROD_STATUS_DESC, B.TRADE_TYPE,
+				B.TRADE_TYPE_DESC, B.PROD_TYPE, B.PROD_TYPE_DESC,
+				B.BRANCH_NO, B.INSTALL_DATE, B.INSTALL_ADDR,
+				B.ADDONES_INFO, B.MONTH_FLAG, B.SERVICE_GRANDE,
+				B.SERVICE_GRANDE_DESC,B.ODSCITY,B.HIGH_WARN_ID,B.HIGH_WARN_DESC,
+				B.PROD_INST_ID,B.ADDRESS_ID,B.ADDRESS_DESC,B.CUSTAGE,B.NUM_RANK,B.IS_REALNAME,B.ID_TYPE_NAME FROM CC_ORDER_CUST_INFO B WHERE
+				B.CUST_GUID = ? AND B.MONTH_FLAG = ?
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="AccessorieDaoImpl" class="com.timesontransfar.customservice.common.uploadFile.dao.impl.AccessorieDaoImpl">
+		<property name="saveFileSql">
+			<value>
+				INSERT INTO CC_FILE_RELATING (FTP_GUID,
+				SERVICE_ORDER_ID, REGION_ID, WORK_SHEET_ID,
+				OLD_FILE_NAME, UPLOAD_STAFF_ID, UPLOAD_STAFF_NAME,
+				FTP_DATE, MONTH_FLAG) VALUES (?, ?, ?, ?, ?, ?, ?,
+				NOW(), ?)
+			</value>
+		</property>
+		<property name="saveCallFileSql">
+			<value>
+				INSERT INTO CC_FILE_RELATING
+				  (FTP_GUID,
+				   SERVICE_ORDER_ID,
+				   REGION_ID,
+				   WORK_SHEET_ID,
+				   OLD_FILE_NAME,
+				   UPLOAD_STAFF_ID,
+				   UPLOAD_STAFF_NAME,
+				   FTP_DATE,
+				   MONTH_FLAG)
+				VALUES
+				  (?,
+				   ?,
+				   92448,
+				   ?,
+				   ?,
+				   ?,
+				   ?,
+				   STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'),
+				   CONVERT(DATE_FORMAT(NOW(),'%m'), SIGNED))
+			</value>
+		</property>
+		<property name="deleteFileSql">
+			<value>
+				DELETE FROM CC_FILE_RELATING WHERE FTP_GUID = ?
+			</value>
+		</property>
+		<property name="quryFileCountSql">
+			<value>
+				SELECT COUNT(1) FROM CC_FILE_RELATING WHERE SERVICE_ORDER_ID = ? AND REGION_ID not in (92448)
+			</value>
+		</property>
+		<property name="quryFileSql">
+			<value>
+				SELECT FTP_GUID,SERVICE_ORDER_ID,REGION_ID,WORK_SHEET_ID,OLD_FILE_NAME,UPLOAD_STAFF_ID,UPLOAD_STAFF_NAME,
+				DATE_FORMAT(FTP_DATE,'%Y-%m-%d %H:%i:%s') FTP_DATE,MONTH_FLAG FROM CC_FILE_RELATING WHERE SERVICE_ORDER_ID = ?
+				AND REGION_ID not in (92448) 
+			</value>
+		</property>
+		<property name="quryFileNotInJTSql">
+			<value>
+				SELECT FTP_GUID,
+				       SERVICE_ORDER_ID,
+				       REGION_ID,
+				       WORK_SHEET_ID,
+				       OLD_FILE_NAME,
+				       UPLOAD_STAFF_ID,
+				       UPLOAD_STAFF_NAME,
+				       DATE_FORMAT(FTP_DATE, '%Y-%m-%d %H:%i:%s') FTP_DATE,
+				       MONTH_FLAG,
+					   '' AS LOGIN_NAME,
+					   '' AS SHORT_LINK_TIME,
+					   '' AS PROD_NUM
+				  FROM CC_FILE_RELATING
+				 WHERE SERVICE_ORDER_ID = ?
+				   AND REGION_ID not in (92448)
+				   AND UPLOAD_STAFF_ID != 2604457
+				   AND ftp_guid NOT IN (SELECT ftp_guid FROM cc_cmp_file_rela WHERE SERVICE_ORDER_ID = ?)
+			</value>
+		</property>
+		<property name="updateRegionSql">
+			<value>UPDATE CC_FILE_RELATING S SET S.REGION_ID = ? WHERE S.SERVICE_ORDER_ID = ? AND S.REGION_ID = ?</value>
+		</property>
+	</bean>
+	<bean id="labelManageDAO" 
+		class="com.timesontransfar.customservice.labelmanage.dao.impl.LabelManageDAOImpl">
+		<property name="saveOrderFinishDate">
+			<value>
+UPDATE cc_service_label
+   SET dx_finish_date = NOW(), sys_modi_date = NOW()
+ WHERE service_order_id = ?
+   AND dx_finish_date IS NULL
+			</value>
+		</property>
+		<property name="saveQualitative">
+			<value>
+			UPDATE CC_SERVICE_LABEL L
+			   SET L.CONTROL_AREA_FIR      = (SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+			       L.CONTROL_AREA_FIR_DESC = (SELECT P.COL_NAME FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+			       L.CONTROL_AREA_SEC      = ?,
+			       L.CONTROL_AREA_SEC_DESC = (SELECT P.COL_VALUE_NAME FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+			       L.DUTY_ORG_FIR          = (SELECT P.ENTITY_ID FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+			       L.DUTY_ORG_FIR_DESC     = (SELECT P.COL_NAME FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+			       L.DUTY_ORG_SEC          = ?,
+			       L.DUTY_ORG_SEC_DESC     = (SELECT P.COL_VALUE_NAME FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+		           L.SIX_GRADE_CATALOG = ?,
+		           L.SIX_GRADE_CATALOG_DISC = (SELECT P.COL_VALUE_NAME FROM PUB_COLUMN_REFERENCE P WHERE P.REFER_ID = ?),
+		           L.SYS_MODI_DATE = NOW()
+			 WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="insertNew">
+			<value>
+			INSERT INTO CC_SERVICE_LABEL(SERVICE_ORDER_ID, SYS_MODI_DATE)VALUES(?,NOW())
+			</value>
+		</property>
+		<property name="saveFirstRespondDate">
+			<value>
+			UPDATE CC_SERVICE_LABEL L
+			   SET L.FIRST_REVERT_DATE = NOW(), L.SYS_MODI_DATE = NOW()
+		 	WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="saveFormalAnswerDate">
+			<value>UPDATE CC_SERVICE_LABEL L SET L.FORMAL_ANSWER_DATE = NOW(), L.SYS_MODI_DATE = NOW() 
+			WHERE L.FORMAL_ANSWER_DATE is null and L.SERVICE_ORDER_ID = ?</value>
+		</property>
+		<property name="updateLastAnswerDate">
+			<value>UPDATE CC_SERVICE_LABEL L SET L.LAST_ANSWER_DATE = NOW(), L.SYS_MODI_DATE = NOW() WHERE L.SERVICE_ORDER_ID = ?</value>
+		</property>
+		<property name="insertServiceConnectionWithDateSql">
+			<value>
+				INSERT INTO cc_service_connection
+				  (connection_guid, service_order_id, connection_state, connection_type, operate_staff, sys_modi_date, accept_date)
+				VALUES
+				  (?, ?, ?, ?, 0, NOW(), STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'))
+			</value>
+		</property>
+		<property name="insertServiceConnectionSql">
+			<value>
+				INSERT INTO cc_service_connection
+				  (connection_guid, service_order_id, connection_state, connection_type, operate_staff, sys_modi_date, accept_date)
+				VALUES
+				  (?, ?, ?, ?, 0, NOW(), NOW())
+			</value>
+		</property>
+		<property name="queryLabelById">
+			<value>
+				SELECT L.SERVICE_ORDER_ID,L.REPEAT_AUTO_FLAG,L.REPEAT_MAN_FLAG,L.UPGRADE_AUTO_FLAG,L.UPGRADE_MAN_FLAG,
+				L.REPEAL_FLAG,L.FIRST_REVERT_DATE,L.DX_FINISH_DATE,L.OVER_TIME_FLAG,L.CONTROL_AREA_FIR,L.CONTROL_AREA_FIR_DESC,
+				L.CONTROL_AREA_SEC,L.CONTROL_AREA_SEC_DESC,L.DUTY_ORG_FIR,L.DUTY_ORG_FIR_DESC,L.DUTY_ORG_SEC,L.DUTY_ORG_SEC_DESC,
+				L.COMPETENT_FLAG,L.FIVE_GRADE_CATALOG,L.FIVE_GRADE_CATALOG_DESC,L.SYS_MODI_DATE,L.FORCE_PRE_FLAG,L.FORCE_CFM_FLAG,
+				L.REPEAL_STAFF,L.REPEAL_DATE,L.VALID_FLAG,L.UPGRADE_INCLINE,
+				DATE_FORMAT(FORMAL_ANSWER_DATE,'%Y-%m-%d %H:%i:%s') FORMAL_ANSWER_DATE,
+        		L.VALID_HASTEN_NUM,L.UP_LEVEL,L.UP_ID,L.UP_REASON,
+        		DATE_FORMAT(LAST_ANSWER_DATE,'%Y-%m-%d %H:%i:%s') LAST_ANSWER_DATE,
+        		L.SIX_GRADE_CATALOG,L.SIX_GRADE_CATALOG_DISC,L.HOTLINE_FLAG,L.UP_TENDENCY_FLAG,L.REPEAT_NEW_FLAG,
+        		L.C_REPEAT_FLAG,L.C_REPEAT_BEST_FLAG,L.C_CALL_FLAG,L.IS_UNIFIED,L.CUST_TYPE,L.ORDER_TYPE,L.REFUND_FLAG,L.CALLOUT_RT_FLAG,L.SENSITIVE_NUM
+				FROM CC_SERVICE_LABEL L WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="queryLabelHisById">
+			<value>
+				SELECT L.SERVICE_ORDER_ID,L.REPEAT_AUTO_FLAG,L.REPEAT_MAN_FLAG,L.UPGRADE_AUTO_FLAG,L.UPGRADE_MAN_FLAG,
+				L.REPEAL_FLAG,L.FIRST_REVERT_DATE,L.DX_FINISH_DATE,L.OVER_TIME_FLAG,L.CONTROL_AREA_FIR,L.CONTROL_AREA_FIR_DESC,
+				L.CONTROL_AREA_SEC,L.CONTROL_AREA_SEC_DESC,L.DUTY_ORG_FIR,L.DUTY_ORG_FIR_DESC,L.DUTY_ORG_SEC,L.DUTY_ORG_SEC_DESC,
+				L.COMPETENT_FLAG,L.FIVE_GRADE_CATALOG,L.FIVE_GRADE_CATALOG_DESC,L.SYS_MODI_DATE,L.FORCE_PRE_FLAG,L.FORCE_CFM_FLAG,
+				L.REPEAL_STAFF,L.REPEAL_DATE,L.VALID_FLAG,L.UPGRADE_INCLINE,
+				DATE_FORMAT(FORMAL_ANSWER_DATE,'%Y-%m-%d %H:%i:%s') FORMAL_ANSWER_DATE,
+        		L.VALID_HASTEN_NUM,L.UP_LEVEL,L.UP_ID,L.UP_REASON,
+        		DATE_FORMAT(LAST_ANSWER_DATE,'%Y-%m-%d %H:%i:%s') LAST_ANSWER_DATE,
+        		L.SIX_GRADE_CATALOG,L.SIX_GRADE_CATALOG_DISC,L.HOTLINE_FLAG,L.UP_TENDENCY_FLAG,L.REPEAT_NEW_FLAG,
+        		L.C_REPEAT_FLAG,L.C_REPEAT_BEST_FLAG,L.C_CALL_FLAG,L.IS_UNIFIED,L.CUST_TYPE,L.ORDER_TYPE,L.REFUND_FLAG,L.CALLOUT_RT_FLAG,L.SENSITIVE_NUM
+				FROM CC_SERVICE_LABEL_HIS L WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateOverTimeLabel">
+			<value>
+				UPDATE CC_SERVICE_LABEL CL
+				   SET CL.OVER_TIME_FLAG = ?,
+				       CL.SYS_MODI_DATE  = NOW()
+				 WHERE CL.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateForceCfmFlag">
+			<value>
+			UPDATE CC_SERVICE_LABEL L SET L.FORCE_CFM_FLAG = ?,L.SYS_MODI_DATE = NOW() WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="insertLabelHisById">
+			<value>
+				INSERT INTO CC_SERVICE_LABEL_HIS
+				  (SERVICE_ORDER_ID,REPEAT_AUTO_FLAG,REPEAT_MAN_FLAG,UPGRADE_AUTO_FLAG,UPGRADE_MAN_FLAG,REPEAL_FLAG,FIRST_REVERT_DATE,DX_FINISH_DATE,
+				  OVER_TIME_FLAG,CONTROL_AREA_FIR,CONTROL_AREA_FIR_DESC,CONTROL_AREA_SEC,CONTROL_AREA_SEC_DESC,DUTY_ORG_FIR,
+				  DUTY_ORG_FIR_DESC,DUTY_ORG_SEC,DUTY_ORG_SEC_DESC,COMPETENT_FLAG,FIVE_GRADE_CATALOG,FIVE_GRADE_CATALOG_DESC,SYS_MODI_DATE,
+				  FORCE_PRE_FLAG,FORCE_CFM_FLAG,REPEAL_STAFF,REPEAL_DATE,VALID_FLAG,UPGRADE_INCLINE,FORMAL_ANSWER_DATE,
+				  VALID_HASTEN_NUM,UP_LEVEL,UP_ID,UP_REASON,LAST_ANSWER_DATE,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DISC,HOTLINE_FLAG,REPEAT_NEW_FLAG,
+				  HOTLINE_STAFF,HOTLINE_DATE,TS_DEAL_RESULT,TS_DEAL_RESULT_NAME,SEC_FLAG,UNUSUAL_FLAG,AUTO_VISIT_FLAG,FIRST_AUDIT_DATE,REPEAT_FLAG,
+				  DEAL_HOURS,AUDIT_HOURS,IS_UNIFIED,ZDX_CP_DATE,LAST_AUDIT_DATE,ADJUST_ACCOUNT_FLAG,DIRECT_DISPATCH_FLAG,UP_TENDENCY_FLAG,final_option_flag,
+				  PASSIVE_REPEAT_FLAG,PASSIVE_UPGRADE_FLAG,C_REPEAT_FLAG,C_REPEAT_BEST_FLAG,C_CALL_FLAG,CUST_TYPE,ORDER_TYPE,REFUND_FLAG,CALLOUT_RT_FLAG,SENSITIVE_NUM)
+				SELECT 
+				  SERVICE_ORDER_ID,REPEAT_AUTO_FLAG,REPEAT_MAN_FLAG,UPGRADE_AUTO_FLAG,UPGRADE_MAN_FLAG,REPEAL_FLAG,FIRST_REVERT_DATE,DX_FINISH_DATE,
+				  OVER_TIME_FLAG,CONTROL_AREA_FIR,CONTROL_AREA_FIR_DESC,CONTROL_AREA_SEC,CONTROL_AREA_SEC_DESC,DUTY_ORG_FIR,
+				  DUTY_ORG_FIR_DESC,DUTY_ORG_SEC,DUTY_ORG_SEC_DESC,COMPETENT_FLAG,FIVE_GRADE_CATALOG,FIVE_GRADE_CATALOG_DESC,NOW(),
+				  FORCE_PRE_FLAG,FORCE_CFM_FLAG,REPEAL_STAFF,REPEAL_DATE,VALID_FLAG,UPGRADE_INCLINE,FORMAL_ANSWER_DATE,
+				  VALID_HASTEN_NUM,UP_LEVEL,UP_ID,UP_REASON,LAST_ANSWER_DATE,SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DISC,HOTLINE_FLAG,REPEAT_NEW_FLAG,
+				  HOTLINE_STAFF,HOTLINE_DATE,TS_DEAL_RESULT,TS_DEAL_RESULT_NAME,SEC_FLAG,UNUSUAL_FLAG,AUTO_VISIT_FLAG,FIRST_AUDIT_DATE,REPEAT_FLAG,
+				  DEAL_HOURS,AUDIT_HOURS,IS_UNIFIED,ZDX_CP_DATE,LAST_AUDIT_DATE,ADJUST_ACCOUNT_FLAG,DIRECT_DISPATCH_FLAG,UP_TENDENCY_FLAG,final_option_flag,
+				  PASSIVE_REPEAT_FLAG,PASSIVE_UPGRADE_FLAG,C_REPEAT_FLAG,C_REPEAT_BEST_FLAG,C_CALL_FLAG,CUST_TYPE,ORDER_TYPE,REFUND_FLAG,CALLOUT_RT_FLAG,SENSITIVE_NUM
+			    FROM CC_SERVICE_LABEL A WHERE A.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="deleteLabelById">
+			<value>
+				DELETE FROM CC_SERVICE_LABEL WHERE SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateValidFlag">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.VALID_FLAG = ?,L.SYS_MODI_DATE = NOW() WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateUpgradeIncline">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.UPGRADE_INCLINE = ? WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateValidHastenNum">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.Valid_Hasten_Num = ? WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateHotlineFlag">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.HOTLINE_FLAG = ?, L.HOTLINE_STAFF = ?, L.HOTLINE_DATE = NOW() WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateDealResultSql">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.TS_DEAL_RESULT = ?, L.TS_DEAL_RESULT_NAME = ? WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateSecFlag">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.SEC_FLAG = (CASE WHEN L.SEC_FLAG IS NULL THEN 0 ELSE L.SEC_FLAG END) + 1 
+					WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateUnusualFlagSql">
+			<value>
+				UPDATE CC_SERVICE_LABEL L SET L.UNUSUAL_FLAG = 1 WHERE L.SERVICE_ORDER_ID = ?
+			</value>
+		</property>
+		<property name="updateAutoVisitFlagSql">
+			<value>
+				UPDATE cc_service_label
+				   SET auto_visit_flag = ?, sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectAutoVisitFlagSql">
+			<value>
+				SELECT IFNULL(auto_visit_flag, 0) auto_visit_flag FROM cc_service_label WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateFirstAuditDateSql">
+			<value>
+				UPDATE cc_service_label
+				   SET first_audit_date = NOW(), sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+				   AND first_audit_date IS NULL
+			</value>
+		</property>
+		<property name="selectFirstAuditDateSql">
+			<value>
+				SELECT DATE_FORMAT(first_audit_date,'%Y-%m-%d %H:%i:%s') first_audit_date
+				  FROM cc_service_label
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectRepeatFlagSql">
+			<value>
+				SELECT ifnull(repeat_new_flag, 0) FROM cc_service_label WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateDealHoursSql">
+			<value>
+				UPDATE cc_service_label
+				   SET deal_hours = ?, sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectDealHoursSql">
+			<value>
+				SELECT ifnull(deal_hours, 30) FROM cc_service_label WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateAuditHoursSql">
+			<value>
+				UPDATE cc_service_label
+				   SET audit_hours = ?, sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectAuditHoursSql">
+			<value>
+				SELECT ifnull(audit_hours, 6) FROM cc_service_label WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateIsUnifiedSql">
+			<value>
+				UPDATE cc_service_label
+				   SET is_unified = ?, sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectIsUnifiedSql">
+			<value>
+				SELECT ifnull(is_unified, 0) FROM cc_service_label WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateZdxCpDateSql">
+			<value>
+				UPDATE cc_service_label
+				   SET zdx_cp_date = NOW(), sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectZdxCpDateSql">
+			<value>
+				SELECT DATE_FORMAT(zdx_cp_date,'%Y-%m-%d %H:%i:%s') zdx_cp_date
+				  FROM cc_service_label
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="updateLastAuditDateSql">
+			<value>
+				UPDATE cc_service_label
+				   SET last_audit_date = NOW(), sys_modi_date = NOW()
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectLastAuditDateSql">
+			<value>
+				SELECT DATE_FORMAT(last_audit_date,'%Y-%m-%d %H:%i:%s') last_audit_date
+				  FROM cc_service_label
+				 WHERE service_order_id = ?
+			</value>
+		</property>
+	</bean>
+	<bean id="dapdSheetInfoDao"
+		class="com.timesontransfar.dapd.dao.impl.DapdSheetInfoDaoImpl">
+	</bean>
+</beans>

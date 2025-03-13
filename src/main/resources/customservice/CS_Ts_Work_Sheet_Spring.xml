@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="sjSheetQualitativeDaoImpl" class="com.timesontransfar.customservice.worksheet.dao.impl.SJSheetQualitativeImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="insertSJSheetQualitativeSql">
+			<value>
+				INSERT INTO cc_sj_qualitative
+				  (service_order_id,
+				   work_sheet_id,
+				   creat_data,
+				   month_flag,
+				   one_sj_catalog,
+				   one_sj_catalog_desc,
+				   two_sj_catalog,
+				   two_sj_catalog_desc,
+				   three_sj_catalog,
+				   three_sj_catalog_desc,
+				   four_sj_catalog_desc,
+				   sj_valid,
+				   sj_region_id,
+				   sj_region_name)
+				VALUES
+				  (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			</value>
+		</property>
+		<property name="insertSJSheetQualitativeHisSql">
+			<value>
+				INSERT INTO cc_sj_qualitative_his
+				  (service_order_id,
+				   work_sheet_id,
+				   creat_data,
+				   month_flag,
+				   one_sj_catalog,
+				   one_sj_catalog_desc,
+				   two_sj_catalog,
+				   two_sj_catalog_desc,
+				   three_sj_catalog,
+				   three_sj_catalog_desc,
+				   four_sj_catalog_desc,
+				   sj_valid,
+				   sj_region_id,
+				   sj_region_name)
+				  SELECT service_order_id,
+				         work_sheet_id,
+				         creat_data,
+				         month_flag,
+				         one_sj_catalog,
+				         one_sj_catalog_desc,
+				         two_sj_catalog,
+				         two_sj_catalog_desc,
+				         three_sj_catalog,
+				         three_sj_catalog_desc,
+				         four_sj_catalog_desc,
+				         sj_valid,
+				         sj_region_id,
+				         sj_region_name
+				    FROM cc_sj_qualitative
+				    WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="deleteSJSheetQualitativeSql">
+			<value>
+				DELETE from cc_sj_qualitative WHERE service_order_id = ?
+			</value>
+		</property>
+		<property name="selectSJSheetQualitativeSql">
+			<value>
+				 SELECT SERVICE_ORDER_ID,
+				       WORK_SHEET_ID,
+				       STR_TO_CHAR(CREAT_DATA, '%Y-%m-%d %H:%i:%s') CREAT_DATA,
+				       MONTH_FLAG,
+				       ONE_SJ_CATALOG,
+				       ONE_SJ_CATALOG_DESC,
+				       TWO_SJ_CATALOG,
+				       TWO_SJ_CATALOG_DESC,
+				       THREE_SJ_CATALOG,
+				       THREE_SJ_CATALOG_DESC,
+				       FOUR_SJ_CATALOG_DESC,
+				       SJ_VALID,
+				       SJ_REGION_ID,
+				       SJ_REGION_NAME
+				  FROM CC_SJ_QUALITATIVE
+				 WHERE WORK_SHEET_ID = ?
+			</value>
+		</property>
+		<property name="selectSJSheetQualitativeHisSql">
+			<value>
+				SELECT SERVICE_ORDER_ID,
+				       WORK_SHEET_ID,
+				       STR_TO_CHAR(CREAT_DATA, '%Y-%m-%d %H:%i:%s') CREAT_DATA,
+				       MONTH_FLAG,
+				       ONE_SJ_CATALOG,
+				       ONE_SJ_CATALOG_DESC,
+				       TWO_SJ_CATALOG,
+				       TWO_SJ_CATALOG_DESC,
+				       THREE_SJ_CATALOG,
+				       THREE_SJ_CATALOG_DESC,
+				       FOUR_SJ_CATALOG_DESC,
+				       SJ_VALID,
+				       SJ_REGION_ID,
+				       SJ_REGION_NAME
+				  FROM CC_SJ_QUALITATIVE_HIS
+				 WHERE WORK_SHEET_ID = ?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="unsatisfyTemplateDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.UnsatisfyTemplateDaoImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>	
+	</bean>
+
+	<bean id="tsSheetAuditingDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.TsSheetAuditingImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveTsSheetAuditingSql">
+			<value>
+				INSERT INTO CC_SHEET_AUDITING( SERVICE_ORDER_ID ,
+				WORK_SHEET_ID, REGION_ID , REGION_NAME , CREAT_DATE,
+				TS_RISK, DUTY_ORG , DUTY_ORG_NAME, RESOUND_MASS, RESOUND_MASS_NAME, JOB_ERROR, ASSESS_ARTICLE,
+				ASSESS_ARTICLE_NAME, TACHE_ID, TACHE_DESC, SHEET_TYPE ,
+				SHEET_TYPE_DESC , MONTH_FLAG 
+				,UPGRADE_TS
+				) VALUES (?, ?, ?, ?,
+				NOW(), ?, ?, ?, ?, ?, ?, ?, ?,?,?,? ,?,? 
+				,?)
+			</value>
+		</property>
+		<property name="saveTsSheetAuditingHisSql">
+			<value>
+				INSERT INTO CC_SHEET_AUDITING_HIS( SERVICE_ORDER_ID ,
+				WORK_SHEET_ID, REGION_ID , REGION_NAME , CREAT_DATE,
+				TS_RISK, DUTY_ORG , DUTY_ORG_NAME, RESOUND_MASS,
+				RESOUND_MASS_NAME, JOB_ERROR, ASSESS_ARTICLE,
+				ASSESS_ARTICLE_NAME, TACHE_ID, TACHE_DESC, SHEET_TYPE ,
+				SHEET_TYPE_DESC , MONTH_FLAG 
+				,UPGRADE_TS
+				) SELECT SERVICE_ORDER_ID ,
+				WORK_SHEET_ID, REGION_ID , REGION_NAME , CREAT_DATE,
+				TS_RISK, DUTY_ORG , DUTY_ORG_NAME, RESOUND_MASS,
+				RESOUND_MASS_NAME, JOB_ERROR, ASSESS_ARTICLE,
+				ASSESS_ARTICLE_NAME, TACHE_ID, TACHE_DESC, SHEET_TYPE ,
+				SHEET_TYPE_DESC , MONTH_FLAG 
+				,UPGRADE_TS
+				FROM CC_SHEET_AUDITING
+				WHERE CC_SHEET_AUDITING.SERVICE_ORDER_ID= ? AND
+				CC_SHEET_AUDITING.REGION_ID = ?
+			</value>
+		</property>
+		<property name="deleteTsSheetAuditingSql">
+			<value>
+				DELETE FROM CC_SHEET_AUDITING WHERE SERVICE_ORDER_ID=?
+				AND REGION_ID = ?
+			</value>
+		</property>
+		<property name="saveResponsiBilityOrgSql">
+			<value>
+				INSERT INTO CC_RESPONSIBILITY_ORG(
+				   GUID,
+				   SERVICE_ORDER_ID,
+				   WORK_SHEET_ID,
+				   REGION_ID,
+				   TACHE_ID,
+				   DUTY_ORG,
+				   DUTY_ORG_NAME,
+				   SYS_DATE
+				 )VALUES( replace(UUID(), '-', '') , ?, ?, ?, ?, ?, ?, NOW() )
+			</value>
+		</property>
+	</bean>
+
+	<bean id="tscustomerVisitDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.TscustomerVisitImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveCustomerVisitSql">
+			<value>
+				INSERT INTO CC_CUSTOMER_VISIT( SERVICE_ORDER_ID,
+				WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				COLLECTIVITY_CIRCS, COLLECTIVITY_CIRCS_NAME,
+				TS_DEAL_ATTITUDE, TS_DEAL_ATTITUDE_NAME,
+				TS_DEAL_BETIMES, TS_DEAL_BETIMES_NAME, TS_DEAL_RESULT,
+				TS_DEAL_RESULT_NAME, TS_VISIT_RESULT, REPLY_DATA,
+				CREAT_DATA, MONTH_FLAG, VISIT_TYPE ) VALUES(
+				?,?,?,?,?,?,?,?,?,?,?,?,?, NOW(), NOW(), ?, ? )
+			</value>
+		</property>
+		<property name="saveCustomerVisitTmpSql">
+			<value>
+				INSERT INTO CC_CUSTOMER_VISIT_TMP( SERVICE_ORDER_ID,
+				WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				COLLECTIVITY_CIRCS, COLLECTIVITY_CIRCS_NAME,
+				TS_DEAL_ATTITUDE, TS_DEAL_ATTITUDE_NAME,
+				TS_DEAL_BETIMES, TS_DEAL_BETIMES_NAME, TS_DEAL_RESULT,
+				TS_DEAL_RESULT_NAME, TS_VISIT_RESULT, REPLY_DATA,
+				CREAT_DATA, MONTH_FLAG, VISIT_TYPE) VALUES(
+				?,?,?,?,?,?,?,?,?,?,?,?,?, NOW(), NOW(), ?, ?)
+			</value>
+		</property>
+		<property name="saveCustomerVisitHisSql">
+			<value>
+				INSERT INTO CC_CUSTOMER_VISIT_HIS( SERVICE_ORDER_ID,
+				WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				COLLECTIVITY_CIRCS, COLLECTIVITY_CIRCS_NAME,
+				TS_DEAL_ATTITUDE, TS_DEAL_ATTITUDE_NAME,
+				TS_DEAL_BETIMES, TS_DEAL_BETIMES_NAME, TS_DEAL_RESULT,
+				TS_DEAL_RESULT_NAME, TS_VISIT_RESULT, REPLY_DATA,
+				CREAT_DATA, MONTH_FLAG, VISIT_TYPE) SELECT SERVICE_ORDER_ID,
+				WORK_SHEET_ID, REGION_ID, REGION_NAME,
+				COLLECTIVITY_CIRCS, COLLECTIVITY_CIRCS_NAME,
+				TS_DEAL_ATTITUDE, TS_DEAL_ATTITUDE_NAME,
+				TS_DEAL_BETIMES, TS_DEAL_BETIMES_NAME, TS_DEAL_RESULT,
+				TS_DEAL_RESULT_NAME, TS_VISIT_RESULT, REPLY_DATA,
+				CREAT_DATA, MONTH_FLAG, VISIT_TYPE FROM CC_CUSTOMER_VISIT WHERE
+				CC_CUSTOMER_VISIT.SERVICE_ORDER_ID = ? AND
+				CC_CUSTOMER_VISIT.REGION_ID = ?
+			</value>
+		</property>
+		<property name="deleteCustomerVisitSql">
+			<value>
+				DELETE FROM CC_CUSTOMER_VISIT WHERE SERVICE_ORDER_ID=?
+				AND REGION_ID = ?
+			</value>
+		</property>
+		<property name="deleteCustomerVisitTmpSql">
+			<value>
+				DELETE FROM CC_CUSTOMER_VISIT_TMP WHERE SERVICE_ORDER_ID=?
+				AND REGION_ID = ?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="tsDealQualitativeDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.TsDealQualitativeImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveDealQualitativeHisSql">
+			<value>
+				INSERT INTO CC_QUALITATIVE_HIS (SERVICE_ORDER_ID,
+				WORK_SHEET_ID, REGION_ID, REGION_NAME, CREAT_DATE,
+				RECKONING_DEAL, RECKONING_DEAL_MANNER,
+				RECKONING_DEAL_NAME , COMPENSATE_DEAL , COMPENSATE_SUM ,
+				FIR_GRADE_CATALOG , FIR_GRADE_CATALOG_DESC ,
+				SEC_GRADE_CATALOG, SEC_GRADE_CATALOG_DESC ,
+				THI_GRADE_CATALOG, THI_GRADE_CATALOG_DESC,
+				FOU_GRADE_CATALOG, FOU_GRADE_CATALOG_DESC ,
+				FIF_GRADE_CATALOG,FIF_GRADE_CATALOG_DESC,
+				SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DESC,
+				MODFIY_CATALOG_CONTENT,
+				MONTH_FLAG,EXES_NAME,EXES_SUM,IF_SP,OPERATION_CODE,OPERATION_ADSCRIPTION,OPERATION_ADSCRIPTION_NAME
+				,ADJUST_BILL ,TS_DEAL_RESULT,TS_DEAL_RESULT_NAME,
+				TS_KEY_WORD , TS_KEY_WORD_DESC
+	            , SUB_KEY_WORD , SUB_KEY_WORD_DESC	            
+	            ,THREE_GRADE_CATALOG   ,THREE_GRADE_CATALOG_DESC 
+				,FOUR_GRADE_CATALOG ,FOUR_GRADE_CATALOG_DESC 
+				,FIVE_GRADE_CATALOG ,FIVE_GRADE_CATALOG_DESC
+				) SELECT SERVICE_ORDER_ID, WORK_SHEET_ID, REGION_ID,
+				REGION_NAME, CREAT_DATE, RECKONING_DEAL,
+				RECKONING_DEAL_MANNER, RECKONING_DEAL_NAME ,
+				COMPENSATE_DEAL , COMPENSATE_SUM , FIR_GRADE_CATALOG ,
+				FIR_GRADE_CATALOG_DESC , SEC_GRADE_CATALOG,
+				SEC_GRADE_CATALOG_DESC , THI_GRADE_CATALOG,
+				THI_GRADE_CATALOG_DESC, FOU_GRADE_CATALOG,
+				FOU_GRADE_CATALOG_DESC , FIF_GRADE_CATALOG,FIF_GRADE_CATALOG_DESC,
+				SIX_GRADE_CATALOG,SIX_GRADE_CATALOG_DESC,MODFIY_CATALOG_CONTENT,
+				MONTH_FLAG,EXES_NAME,EXES_SUM,IF_SP,OPERATION_CODE,
+				OPERATION_ADSCRIPTION,OPERATION_ADSCRIPTION_NAME,ADJUST_BILL ,TS_DEAL_RESULT,TS_DEAL_RESULT_NAME
+				,TS_KEY_WORD , TS_KEY_WORD_DESC
+	            ,SUB_KEY_WORD , SUB_KEY_WORD_DESC	            
+	            ,THREE_GRADE_CATALOG   ,THREE_GRADE_CATALOG_DESC 
+				,FOUR_GRADE_CATALOG ,FOUR_GRADE_CATALOG_DESC 
+				,FIVE_GRADE_CATALOG ,FIVE_GRADE_CATALOG_DESC
+				FROM CC_QUALITATIVE WHERE
+				CC_QUALITATIVE.SERVICE_ORDER_ID = ? AND
+				CC_QUALITATIVE.REGION_ID = ?
+			</value>
+		</property>
+		<property name="updateDealQualitativeSql">
+			<value>
+				UPDATE CCL_QUALITATIVE SET REGION_ID = ? , REGION_NAME =
+				? , CREAT_DATE = ? , RECKONING_DEAL = ? ,
+				RECKONING_DEAL_MANNER = ? , RECKONING_DEAL_NAME = ? ,
+				COMPENSATE_DEAL = ? , COMPENSATE_SUM = ? ,
+				FIR_GRADE_CATALOG = ? , FIR_GRADE_CATALOG_DESC = ? ,
+				SEC_GRADE_CATALOG = ? , SEC_GRADE_CATALOG_DESC = ? ,
+				THI_GRADE_CATALOG = ? , THI_GRADE_CATALOG_DESC = ? ,
+				FOU_GRADE_CATALOG = ? , FOU_GRADE_CATALOG_DESC = ? ,
+				MODFIY_CATALOG_CONTENT = ? WHERE SERVICE_ORDER_ID = ?
+				AND WORK_SHEET_ID = ? AND MONTH_FLAG = ?
+			</value>
+		</property>
+		<property name="deleteDealQualitativeSql">
+			<value>
+				DELETE FROM CC_QUALITATIVE WHERE SERVICE_ORDER_ID = ?
+				AND REGION_ID = ?
+			</value>
+		</property>
+	</bean>
+
+	<bean id="tsWorkSheetDaoImpl"
+		class="com.timesontransfar.customservice.worksheet.dao.impl.TsWorkSheetDaoImpl">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="systemAuthorization">
+			<ref bean="systemAuthorization" />
+		</property>
+		<property name="saveSheetReadSql">
+			<value>
+				INSERT INTO
+				CC_SHEET_READ_RECORD(WORK_SHEET_ID,READ_STAFF_ID,READ_STAFF_NAME,READ_START_DATE,READ_DATE_LENGTH,READ_END_DATE)
+				VALUES(?,?,?,NOW(),?,date_add(NOW(),interval ? HOUR))
+			</value>
+		</property>
+
+		<property name="saveDealTypeSql">
+			<value>
+				INSERT INTO
+				CC_WORKSHEET_DEAL_TYPE(DEAL_TYPE_ID,SERVICE_ORDER_ID,WORKSHEET_ID,DEAL_TYPE,DEAL_TYPE_DESC,
+				DEAL_ID,DEAL_DESC,DEAL_CONTENT,MONTH_FLAG,UPGRADE_INCLINE)
+				VALUES(?,?,?,?,?,?,?,?,?,?)
+			</value>
+		</property>
+		<property name="queryDealTypeSql">
+			<value>
+				SELECT count(1) FROM CC_WORKSHEET_DEAL_TYPE t where t.worksheet_id=? and t.deal_type=? and t.deal_type_desc=? 
+			</value>
+		</property>
+		<property name="deleOrderDealTyPeSql">
+			<value>
+				DELETE FROM CC_WORKSHEET_DEAL_TYPE WHERE
+				SERVICE_ORDER_ID=?
+			</value>
+		</property>
+		<property name="deleteDTBySheetid">
+			<value>
+				DELETE FROM CC_WORKSHEET_DEAL_TYPE WHERE
+					Worksheet_Id=?
+			</value>
+		</property>
+		<property name="saveDealTypeHisSql">
+			<value>
+				INSERT INTO
+				CC_WORKSHEET_DEAL_TYPE_HIS(DEAL_TYPE_ID,SERVICE_ORDER_ID,WORKSHEET_ID,DEAL_TYPE,DEAL_TYPE_DESC,
+				DEAL_ID,DEAL_DESC,DEAL_CONTENT,MONTH_FLAG,UPGRADE_INCLINE) SELECT
+				DEAL_TYPE_ID,SERVICE_ORDER_ID,WORKSHEET_ID,DEAL_TYPE,DEAL_TYPE_DESC,
+				DEAL_ID,DEAL_DESC,DEAL_CONTENT,MONTH_FLAG,UPGRADE_INCLINE FROM
+				CC_WORKSHEET_DEAL_TYPE WHERE
+				CC_WORKSHEET_DEAL_TYPE.SERVICE_ORDER_ID=?
+				<!--  AND CC_WORKSHEET_DEAL_TYPE.MONTH_FLAG=? -->
+			</value>
+		</property>
+		<property name="saveRetVisitResultSql">
+			<value>
+				INSERT INTO
+				CC_SHEET_RETURN_RESULT(WORK_SHEET_ID,DEAL_ORG_NAME,DEAL_ORG_ID,CUST_SATISFY_DEGREE,
+				CUST_SATISFY_DEGREE_DESC,TS_TYPE,TS_TYPE_DESC,BACK_VISIT_CONTENT,RESULT_REASON_DESC,RESULT_REASON,CONTACT_NUM,
+				REGION_ID,SERVICE_ORDER_ID,MONTH_FLAG,ASK_DATE)
+				VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s'))
+			</value>
+		</property>
+		<property name="deleOrdereRetVisitResultSql">
+			<value>
+				DELETE A FROM CC_SHEET_RETURN_RESULT A WHERE
+				A.SERVICE_ORDER_ID = ? AND A.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="saveSheetApplySql">
+			<value>
+				INSERT INTO CC_SHEET_STATU_APPLY(APPLY_GUID,
+				SERVICE_ORDER_ID, WORKSHEET_ID, APPLY_ORG,
+				APPLY_ORG_NAME, APPLY_STAFF, APPLY_STAFF_NAME,
+				APPLY_REASON, APPLY_AUD_STATU, AUD_RESULT, AUD_ORG,
+				AUD_ORG_NAME, AUD_STAFF, AUD_STAFF_NAME,
+				AUD_DATE,MONTH_FLAG,APPLY_TYPE)
+				VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)
+			</value>
+		</property>
+		<property name="saveSheetApplyHisSql">
+			<value>
+				INSERT INTO CC_SHEET_STATU_APPLY_HIS(APPLY_GUID,
+				SERVICE_ORDER_ID, WORKSHEET_ID, APPLY_ORG,
+				APPLY_ORG_NAME, APPLY_STAFF, APPLY_STAFF_NAME,
+				APPLY_REASON, APPLY_AUD_STATU, AUD_RESULT, AUD_ORG,
+				AUD_ORG_NAME, AUD_STAFF, AUD_STAFF_NAME,
+				AUD_DATE,MONTH_FLAG,APPLY_TYPE) SELECT APPLY_GUID,
+				SERVICE_ORDER_ID, WORKSHEET_ID, APPLY_ORG,
+				APPLY_ORG_NAME, APPLY_STAFF, APPLY_STAFF_NAME,
+				APPLY_REASON, APPLY_AUD_STATU, AUD_RESULT, AUD_ORG,
+				AUD_ORG_NAME, AUD_STAFF, AUD_STAFF_NAME,
+				AUD_DATE,MONTH_FLAG,APPLY_TYPE FROM CC_SHEET_STATU_APPLY
+				WHERE CC_SHEET_STATU_APPLY.SERVICE_ORDER_ID=? AND
+				CC_SHEET_STATU_APPLY.MONTH_FLAG=?
+			</value>
+		</property>
+		<property name="getSheetApplySql">
+			<value>
+				SELECT APPLY_GUID, SERVICE_ORDER_ID, WORKSHEET_ID,
+				APPLY_ORG, APPLY_ORG_NAME, APPLY_STAFF,
+				APPLY_STAFF_NAME, APPLY_REASON, APPLY_AUD_STATU,
+				AUD_RESULT, AUD_ORG, AUD_ORG_NAME, AUD_STAFF,
+				AUD_STAFF_NAME, DATE_FORMAT(AUD_DATE,'%Y-%m-%d %H:%i:%s') AS AUD_DATE, MONTH_FLAG,APPLY_TYPE FROM
+				CC_SHEET_STATU_APPLY WHERE 1 = 1
+			</value>
+		</property>
+		<property name="getSheetApplyHisSql">
+			<value>
+				SELECT APPLY_GUID, SERVICE_ORDER_ID, WORKSHEET_ID,
+				APPLY_ORG, APPLY_ORG_NAME, APPLY_STAFF,
+				APPLY_STAFF_NAME, APPLY_REASON, APPLY_AUD_STATU,
+				AUD_RESULT, AUD_ORG, AUD_ORG_NAME, AUD_STAFF,
+				AUD_STAFF_NAME, DATE_FORMAT(AUD_DATE,'%Y-%m-%d %H:%i:%s') AS AUD_DATE, MONTH_FLAG,APPLY_TYPE FROM
+				CC_SHEET_STATU_APPLY_HIS WHERE 1 = 1
+			</value>
+		</property>
+		<property name="updateSheetApplySql">
+			<value>
+				UPDATE CC_SHEET_STATU_APPLY T SET
+				T.APPLY_AUD_STATU=?,T.AUD_RESULT=?,T.AUD_ORG=?,
+				T.AUD_ORG_NAME=?,T.AUD_STAFF=?,T.AUD_STAFF_NAME=?,T.AUD_DATE=NOW()
+				WHERE T.APPLY_GUID=?
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="tsSheetDealPubImpl__FACADE__"
+		class="com.timesontransfar.customservice.worksheet.service.impl.TsSheetDealPubImpl">
+  		<property name="allotDDQSql"><!-- 查询工单池的 后台派单工单、部门处理工单、预定性工单 -->
+  			<value>
+SELECT A.*
+  FROM CC_WORK_SHEET A, CC_SERVICE_ORDER_ASK S, CC_SERVICE_CONTENT_ASK D, CC_ORDER_CUST_INFO C
+ WHERE A.SERVICE_ORDER_ID = S.SERVICE_ORDER_ID AND S.SERVICE_ORDER_ID = D.SERVICE_ORDER_ID AND S.CUST_GUID = C.CUST_GUID
+   AND A.LOCK_FLAG = 0
+   AND A.SERVICE_TYPE IN (700006312, 720200003, 700001171, 600000074, 720130000, 720200000, 720200002)
+   AND A.sheet_type in (700000126, 700000127, 600000075, 600000069, 600000077, 720130011, 720130013, 720130014, 720130016)
+   AND A.SHEET_STATU in (700000044, 700000048, 720130031)
+  			</value>
+  		</property>
+  		<property name="allotApvSql"><!-- 查询工单池的审批工单 -->
+  			<value>
+SELECT A.*
+  FROM CC_WORK_SHEET A, CC_SERVICE_ORDER_ASK S, CC_SERVICE_CONTENT_ASK D, CC_ORDER_CUST_INFO C
+ WHERE A.SERVICE_ORDER_ID = S.SERVICE_ORDER_ID AND S.SERVICE_ORDER_ID = D.SERVICE_ORDER_ID AND S.CUST_GUID = C.CUST_GUID
+   AND A.LOCK_FLAG = 0
+   AND A.SERVICE_TYPE IN (700006312, 720200003, 600000074, 720130000, 720200000, 720200002)
+   AND A.sheet_type in (700001002, 720130015)
+   AND A.SHEET_STATU in (600000002, 720130031)
+  			</value>
+  		</property>
+  		<property name="allotFinApvSql"><!-- 查询在南京分公司的工单池的审核工单 -->
+  			<value>
+SELECT A.*
+  FROM CC_WORK_SHEET A, CC_SERVICE_ORDER_ASK S, CC_SERVICE_CONTENT_ASK D, CC_ORDER_CUST_INFO C
+ WHERE A.SERVICE_ORDER_ID = S.SERVICE_ORDER_ID AND S.SERVICE_ORDER_ID = D.SERVICE_ORDER_ID AND S.CUST_GUID = C.CUST_GUID
+   AND A.LOCK_FLAG = 0
+   AND A.SERVICE_TYPE IN (700006312, 720200003, 600000074, 720200000, 720200002)
+   AND A.TACHE_ID = 700000088
+   AND A.SHEET_STATU = 600000004
+  			</value>
+  		</property>
+  		<property name="distillSql"><!-- 将待处理的工单放进个人任务池 -->
+  			<value>
+UPDATE CC_WORK_SHEET T
+   SET T.DEAL_STAFF         = ?,
+       T.DEAL_STAFF_NAME    = ?,
+       T.RECEIVE_STAFF      = ?,
+       T.RECEIVE_STAFF_NAME = ?,
+       T.DEAL_ORG_ID        = ?,
+       T.DEAL_ORG_NAME      = ?,
+       T.SHEET_STATU        = ?,
+       T.SHEET_STATU_DESC   = ?,
+       T.STATU_DATE         = NOW(),
+       T.LOCK_FLAG          = ?,
+       T.DISTILL_DATE       = NOW()
+ WHERE T.WORK_SHEET_ID = ?
+  			</value>
+  		</property> 
+	</bean>
+</beans>

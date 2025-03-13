@@ -1,0 +1,12 @@
+---
+common:
+  active: test-jar
+  port: 12118
+  licence: "8321100029"
+  aiopsagent_path: "/aiopsagent/aiopsagent-1.8.0/aiopsagent-1.8.0.jar"
+  project_tag: "jscscTYjar"
+  name: "customactiviti"
+  flag: "0"
+
+run:
+  - hostname: cf168.com

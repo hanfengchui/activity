@@ -1,0 +1,17 @@
+---
+- name: list back files
+  shell: find . -name "{{ project_name }}_*" -ctime +30
+  args:
+    chdir: "{{ dest_file_path }}/backup/"
+  register: files_list
+
+- debug: msg="files_list:{{ files_list.stdout_lines }}"
+
+- name: clean back files
+  file:
+    path: "{{ dest_file_path }}/backup/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ files_list.stdout_lines }}"
+
+- debug: msg="clean done"

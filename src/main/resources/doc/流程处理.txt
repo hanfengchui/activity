@@ -1,0 +1,545 @@
+备注说明：判断消息是否发送ITSM
+派单部门如果是企信：
+this.ORGID_ITSM="362813";//企信部
+派单人的话  调用：/cs/pubFunc/getStaffOrgName
+获得对应人的基础消息来判断
+	itsm_flag
+
+
+后台派单直接办结：
+  路径：http://127.0.0.1:12118//workflow/tsWorkSheetDeal/dispatchToPigeonhole?dealId=600001141&dealDesc=一般处理&sheetFinishAuto=true
+  json:
+           {
+    "serviceOrderId": "ZX0512200210330644",
+    "workSheetId": "0512200210301696",
+    "rcvOrgId": "ASSIGN_TO_AUD",
+    "regionId": 20,
+    "month": 2,
+    "dealContent": "联系时间及号码：\r\n核实情况：\r\n处理结果：\r\n用户认可程度：312312312313的2\r\n参考规范：\r\n备注：23122312321"
+}
+
+
+后台派单：不通过 -退回前台
+url:
+   http://127.0.0.1:12118/workflow/tsWorkSheetDeal/assignBackToAsk?labelInstance=
+body:
+{
+    "sheetPubInfo": {
+        "serviceOrderId": "JY0527200209318825",
+        "workSheetId": "0527200209263290",
+        "regionId": 84,
+        "month": 2,
+        "dealContent": "回退工单"
+    },
+    "labelInstance": []
+}
+后台派单转派：http://127.0.0.1:12118/workflow/tsWorkSheetDeal/dispatchSheet
+body
+
+{"sheetInfoArry":
+[{
+    "workSheetId": "0512200211306481",
+    "rcvOrgId": 182,
+    "rcvOrgName": "南京分公司",
+    "dealRequire": "请相关部门尽快处理，并回复用户！谢谢 ",
+    "month": 2,
+    "regionId": 20,
+    "stationLimit": 0,
+    "dealLimitTime": 0,
+    "mainType": "1",
+    "serviceOrderId": "ZX0512200211332530",
+    "rcvStaffId": ""
+}],"itsm_flag":0}
+
+
+部门处理直接不转派处理：
+http://127.0.0.1:12118/workflow/departmentDeal/dealsheet?delalId=600001141&dealName=一般处理
+
+updateFlag 标识 是否修改工单类型
+autoFlag 标识： 是否工单直接办结
+
+{
+    "updateFlag": true,  
+    "labelInstance": [],
+    "autoFlag": true,
+    "tsSheetAuditing": {
+        "regionId": 33,
+        "sheetType": 700000127,
+        "tacheId": 700000086,
+        "sheetTypeDesc": "投诉部门处理工单",
+        "tacheName": "部门处理",
+        "sheetId": "0514200203169511",
+        "orderId": "ZX0514200203292740",
+        "assessArticle": 0,
+        "assessArticleName": " ",
+        "regName": "扬州",
+        "monthFlag": 2,
+        "dutyOrg": "",
+        "dutyOrgName": "",
+        "tsRisk": 0,
+        "resoundMass": 600001148,
+        "resoundMassName": "合格",
+        "jobError": 0,
+        "upgradeTs": 0
+    },
+    "servContent": {
+        "servOrderId": "ZX0514200203292740",
+        "sixCatalog": 23001847,
+        "regionId": 0,
+        "regionName": "",
+        "servType": 0,
+        "servTypeDesc": "",
+        "appealProdId": 23000003,
+        "prodNum": "17312907156",
+        "appealReasonId": 23000019,
+        "appealChild": 23000116,
+        "appealReasonDesc": "费用争议",
+        "appealProdName": "固话业务",
+        "complaintedOrdName": "",
+        "acceptContent": "",
+        "custExpect": "",
+        "fouGradeCatalog": 23000478,
+        "orderVer": 0,
+        "appealDetailId": 0,
+        "appealDetailDesc": "",
+        "complaintedOrg": "",
+        "unsatisNum": 0,
+        "appealChildDesc": "超长/超短/超频话单",
+        "fouGradeDesc": "超长/超短/超频话单",
+        "termiProductId": "",
+        "termiProductDesc": "",
+        "termiProductType": "",
+        "fiveCatalog": 23001157,
+        "fiveGradeDesc": "超长/超短/超频话单",
+        "sixGradeDesc": "超长/超短/超频话单",
+        "outletsName": "",
+        "outletsGuid": ""
+    },
+    "tsdealQualitative": {
+        "month": 2,
+        "serviceOrderId": "ZX0514200203292740",
+        "regionId": 33,
+        "regionName": "扬州",
+        "workSheetId": "0514200203169511",
+        "creatDate": "",
+        "dealResult": 600001165,
+        "fouGradeCatalog": 23000478,
+        "fiveCatalog": 0,
+        "tsKeyWord": 0,
+        "tsKeyWordDesc": "",
+        "subKeyWord": 0,
+        "subKeyWordDesc": "",
+        "threeCatalog": 0,
+        "threeCatalogDesc": "",
+        "thourCatalog": 0,
+        "thourCatalogDesc": "",
+        "fiveCatalogDesc": "",
+        "reckoningDeal": 0,
+        "reckoningDealManner": 600004657,
+        "reckoningDealName": "无",
+        "compensateDeal": 0,
+        "compensateSum": "",
+        "firGradeCatalog": 23000003,
+        "firGradeCatalogDesc": "固话业务",
+        "secGradeCatalog": 23000019,
+        "secGradeCatalogDesc": "费用争议",
+        "thiGradeCatalog": 23000116,
+        "thiGradeCatalogDesc": "超长/超短/超频话单",
+        "fouGradeCatalogDesc": "超长/超短/超频话单",
+        "fifGradeCatalog": 23001157,
+        "fifGradeCatalogDesc": "超长/超短/超频话单",
+        "sixGradeCatalog": 23001847,
+        "sixGradeCatalogDesc": "超长/超短/超频话单",
+        "modfiyCatalogContent": "qe",
+        "exesName": "",
+        "esesSum": "",
+        "ifsp": 0,
+        "operationCode": "",
+        "operationAdscription": 700001772,
+        "operationAdscriptionName": "本地",
+        "adjustBill": "",
+        "dealResultName": "很满意"
+    },
+    "sheetPubInfo": {
+        "month": 2,
+        "serviceOrderId": "ZX0514200203292740",
+        "regionId": 33,
+        "regionName": "",
+        "sheetType": 0,
+        "sheetStatu": 0,
+        "dealContent": "联系时间及号码：\n核实情况：\n处理结果：1231312\n用户认可程度：131231321312qweq\n参考规范：\n备注：",
+        "workSheetId": "0514200203169511",
+        "rcvOrgId": "",
+        "lockFlag": 0,
+        "tacheId": 0,
+        "dealStaffName": "",
+        "dealOrgName": "",
+        "homeSheet": 0,
+        "reportNum": 0,
+        "receiveOrgDisplay": "",
+        "dealTypeDesc": "",
+        "receiveRegionId": 0,
+        "receiveRegionName": "",
+        "servType": 0,
+        "crtDate": "",
+        "sheetRcvDate": "",
+        "rcvOrgName": "",
+        "rcvStaffId": 0,
+        "rcvStaffName": "",
+        "dealRequire": "",
+        "respondDate": "",
+        "dealStaffId": 0,
+        "dealOrgId": "",
+        "retStaffId": 0,
+        "retStaffName": "",
+        "retOrgId": "",
+        "retOrgName": "",
+        "sourceSheetId": "",
+        "statuDate": "",
+        "dealLimitTime": 0,
+        "wflInstId": "",
+        "workSheetSchemaId": 0,
+        "tacheInstId": "",
+        "lockDate": "",
+        "sheetPriValue": 0,
+        "hangupStrTime": "",
+        "hangupTimeSum": 0,
+        "servTypeDesc": "",
+        "sheetSatuDesc": "",
+        "tacheDesc": "",
+        "preAlarmValue": 0,
+        "alarmValue": 0,
+        "autoVisitFlag": 0,
+        "precontractSign": 0,
+        "precontractTime": "",
+        "hastentNum": 0,
+        "sheetTypeDesc": "",
+        "mainType": 0,
+        "stationLimit": 0,
+        "dealId": 0,
+        "nextTache": 0,
+        "flowSequence": "",
+        "precontractFlag": 0,
+        "sendFlag": 0
+    }
+}
+部门处理 转派：http://127.0.0.1:12118/workflow/departmentDeal/orgDealDispathSheet?askSource=707907007&dealType=0
+
+askSource  受理渠道
+body:
+{
+    "sheetInfoArry": [
+        {
+            "workSheetId": "0527200204192455",
+            "rcvOrgId": 182,
+            "rcvOrgName": "南京分公司",
+            "dealRequire": "请相关部门尽快处理，并回复用户！谢谢 ",
+            "month": 2,
+            "regionId": 84,
+            "stationLimit": 0,
+            "dealLimitTime": 0,
+            "mainType": "1",
+            "serviceOrderId": "ZX0527200201278696",
+            "rcvStaffId": ""
+        }
+    ],
+    "itsm_flag": 0,
+    "labelInstance": [],
+    "dealResult":"处理派单"
+}
+
+部门审批 退单
+
+
+部门处理 转派：http://127.0.0.1:12118/workflow/departmentDeal/orgDealDispathSheet?askSource=707907007&dealType=4
+
+askSource  受理渠道
+
+dealType 值为：4
+
+body:
+{
+    "sheetInfoArry": [
+        {
+            "workSheetId": "0527200204192455",
+            "rcvOrgId": 182,
+            "rcvOrgName": "南京分公司",
+            "dealRequire": "请相关部门尽快处理，并回复用户！谢谢 ",
+            "month": 2,
+            "regionId": 84,
+            "stationLimit": 0,
+            "dealLimitTime": 0,
+            "mainType": "1",
+            "serviceOrderId": "ZX0527200201278696",
+            "rcvStaffId": ""
+        }
+    ],
+    "itsm_flag": 0,
+    "labelInstance": [],
+    "dealResult":"处理派单"
+}
+
+后台派单-工单审核-重新派单：http://127.0.0.1:12118/workflow/tsWorkSheetDeal/submitAuitSheetToDeal?acceptContent="处理内容"&dealType=5
+
+acceptContent="处理内容"
+dealType=5
+
+body
+{
+    "labelInstance": [],
+    "workSheetObj": [
+        {
+            "workSheetId": "0512200211306481",
+            "rcvOrgId": 182,
+            "rcvOrgName": "南京分公司",
+            "dealRequire": "请相关部门尽快处理，并回复用户！谢谢 ",
+            "month": 2,
+            "regionId": 20,
+            "stationLimit": 0,
+            "dealLimitTime": 0,
+            "mainType": "1",
+            "serviceOrderId": "ZX0512200211332530",
+            "rcvStaffId": ""
+        }
+    ],
+    "itsm_flag": 0
+}
+
+终定性直接办结
+
+modifyUnusualFlag  标识：
+
+updateUnusual(conent, $J("#hidden_serviceOrderId").val()); 此方法
+
+{
+    "modifyUnusualFlag": false,
+    "sheetPubInfo": {
+        "serviceOrderId": "ZX0512200210330644",
+        "workSheetId": "0512200210301696",
+        "rcvOrgId": "ASSIGN_TO_AUD",
+        "regionId": 20,
+        "month": 2,
+        "dealContent": "联系时间及号码：\r\n核实情况：\r\n处理结果：\r\n用户认可程度：312312312313的2\r\n参考规范：\r\n备注：23122312321"
+    },
+    "labelInstance": []
+}
+
+终定性处理 直接办结：/workflow/complaintWorksheetDeal/submitFinAssessNew
+http://127.0.0.1:12118/workflow/complaintWorksheetDeal/submitFinAssessNew?regionId=3&month=2&dealContent=nraskdjnakd&flag=1&valiFlag=1&upgradeIncline=0&contactStatus=0&unifiedCode
+
+contactStatus 标识 是否联系不上用户
+
+unifiedCode 标识统一编码  可以为空
+
+body
+
+{
+    "mistake": {
+        "worksheetID": "025200212334627",
+        "serviceOrderID": "TS025200211337603",
+        "mistakeOrgID": "",
+        "mistakeFlag": 0,
+        "mistakeDesc": ""
+    },
+    "tsSheetQualitative": {
+        "plusOne": "40000009",
+        "plusTwo": "40000129",
+        "lastDealContent": "",
+        "sixCatalog": 28003591,
+        "region": 3,
+        "sheetId": "025200212334627",
+        "orderId": "TS025200211337603",
+        "fiveCatalog": 28001839,
+        "tsKeyWord": 28000001,
+        "tsKeyWordDesc": "移动业务",
+        "regName": "南京市",
+        "sortId": 0,
+        "sortName": " ",
+        "tsReasonId": 0,
+        "tsReasonName": "移动业务-规则政策-业务办理规则-拆机/退网规则-拆机/退网规则-拆机/退网规则",
+        "tsifBeing": 700001817,
+        "appendCases": 0,
+        "casesId": 600001183,
+        "casesName": "判例",
+        "monthFlag": 2,
+        "dutyOrg": "707907063",
+        "dutyOrgName": "南通分公司",
+        "subKeyWord": 28000016,
+        "subKeyWordDesc": "规则政策",
+        "threeCatalog": 28000109,
+        "threeCatalogDesc": "业务办理规则",
+        "thourCatalog": 28000585,
+        "thourCatalogDesc": "拆机/退网规则",
+        "fiveCatalogDesc": "拆机/退网规则",
+        "sixCatalogDesc": "拆机/退网规则",
+        "controlAreaFir": 707907131,
+        "controlAreaFirDesc": "企业有责",
+        "controlAreaSec": 707907133,
+        "controlAreaSecDesc": "企业一级责任",
+        "satisfyId": 600001166,
+        "satisfyDesc": "满意",
+        "dutyOrgThird": "",
+        "dutyOrgThirdName": "",
+        "forceFlag": "70010106",
+        "forceFlagDesc": "其他",
+        "unsatisfyReason": "",
+        "sysJudge": "",
+        "plusOneDesc": "机主本人无法到场办理拆机",
+        "plusTwoDesc": "机主不在当地"
+    },
+    "tscustomerVisit": {
+        "month": 2,
+        "serviceOrderId": "TS025200211337603",
+        "regionId": 3,
+        "regionName": "南京市",
+        "workSheetId": "025200212334627",
+        "creatDate": "",
+        "collectivityCircs": 600001154,
+        "collectivityCircsName": "很不满意",
+        "tsDealAttitude": 600001156,
+        "tsDealAttitudeName": "满意",
+        "tsDealBetimes": 600001161,
+        "tsDealBetimesName": "满意",
+        "tsDealResult": 600001166,
+        "tsDealResultName": "满意",
+        "tsVisitResult": "qsadasdasdqasd",
+        "replyData": ""
+    },
+    "labelInstance": []
+}
+定责申辩直接办结：
+http://127.0.0.1:12118/workflow/complaintWorksheetDeal/submitExcuseNew?worksheetId=0519200212350701&regionId=69&month=2&flag=1&excuseContent=处理内容
+字段说明
+worksheetId=0519200212350701
+&regionId=69 区号
+&month=2  月份
+&flag=1   是否申辩：0 申辩 1 否
+&excuseContent=处理内容
+
+返回:
+{"resultObj":{"openCmpPage":false,"msg":""},"code":"0000","message":"成功"}
+
+openCmpPage 为true 则打开此页面  此页面为集团页面后期会改造
+window.open('lcliqueWorkSheetInfo.jsp?cmpRelaGuid=' + relaGuid,
+'_blank','height=600, width=1000, toolbar=no, menubar=no, top=80,left=60,scrollbars=yes, resizable=yes, location=no, status=no');
+
+预定性提交处理方法：
+http://127.0.0.1:12118/workflow/complaintWorksheetDeal/submitPreAssessNew?
+regionId=20&month=2&dealContent=处理内容&upgradeIncline=0&contactStatus=&unifiedCode
+body:
+
+toDispatchFlag 是否预派判断值
+
+预派对象
+sheetTodispatch 
+{
+    "toDispatchFlag": false,
+    "tsSheetQualitative": {
+        "subKeyWordDesc": "省内sp及自有业务",
+        "region": 15,
+        "forceFlagDesc": "强制捆绑搭售业务",
+        "plusTwoDesc": "",
+        "controlAreaSec": 707907133,
+        "dutyOrgName": "省企业信息化部",
+        "fiveCatalog": 28003024,
+        "subKeyWord": 28000054,
+        "dutyOrgThird": "362813",
+        "controlAreaSecDesc": "企业一级责任",
+        "unsatisfyReason": "",
+        "forceFlag": "70010102",
+        "sortName": " ",
+        "tsKeyWord": 28000007,
+        "threeCatalog": 28000378,
+        "sixCatalogDesc": "其他",
+        "satisfyId": 600001165,
+        "monthFlag": 2,
+        "sysJudge": "28003611-28003496-28003955-28003497-28005080",
+        "orderId": "TS0510200212343687",
+        "threeCatalogDesc": "用户端原因",
+        "appendCases": 0,
+        "controlAreaFirDesc": "企业有责",
+        "dutyOrgThirdName": "省企业信息化部",
+        "sortId": 0,
+        "controlAreaFir": 707907131,
+        "plusTwo": "",
+        "lastDealContent": " 经核实话单和网运提供的基站信息，用户去过常州，请客服人员妥善解释。",
+        "casesId": 600001183,
+        "tsifBeing": 700001819,
+        "tsReasonName": "互联网及增值业务-省内sp及自有业务-用户端原因-其他-其他-其他",
+        "thourCatalog": 28001352,
+        "fiveCatalogDesc": "其他",
+        "regName": "无锡",
+        "sixCatalog": 28005080,
+        "sheetId": "0510200212349295",
+        "casesName": "判例",
+        "plusOneDesc": "增值业务问题",
+        "dutyOrg": "707907109",
+        "thourCatalogDesc": "其他",
+        "tsReasonId": 0,
+        "plusOne": "40000080",
+        "tsKeyWordDesc": "互联网及增值业务",
+        "satisfyDesc": "很满意"
+    },
+    "labelInstance": [],
+    "sheetTodispatch": {}
+}
+
+部门审批处理直接提交:
+http://127.0.0.1:12118/workflow/complaintWorksheetDeal/sumbitOrgDealNew?delalId=0&dealName=
+
+body:
+{
+    "tsdealQualitative": {
+        "month": 2,
+        "serviceOrderId": "ZX0512200210330515",
+        "regionId": 20,
+        "regionName": "苏州",
+        "workSheetId": "0512200211313887",
+        "creatDate": "",
+        "dealResult": 600001166,
+        "fouGradeCatalog": 0,
+        "fiveCatalog": 0,
+        "tsKeyWord": 0,
+        "tsKeyWordDesc": "",
+        "subKeyWord": 0,
+        "subKeyWordDesc": "",
+        "threeCatalog": 0,
+        "threeCatalogDesc": "",
+        "thourCatalog": 0,
+        "thourCatalogDesc": "",
+        "fiveCatalogDesc": "",
+        "reckoningDeal": 0,
+        "reckoningDealManner": 0,
+        "reckoningDealName": "",
+        "compensateDeal": 0,
+        "compensateSum": "",
+        "firGradeCatalog": 0,
+        "firGradeCatalogDesc": "",
+        "secGradeCatalog": 0,
+        "secGradeCatalogDesc": "",
+        "thiGradeCatalog": 0,
+        "thiGradeCatalogDesc": "",
+        "fouGradeCatalogDesc": "",
+        "fifGradeCatalog": 0,
+        "fifGradeCatalogDesc": "",
+        "sixGradeCatalog": 0,
+        "sixGradeCatalogDesc": "",
+        "modfiyCatalogContent": "",
+        "exesName": "",
+        "esesSum": "",
+        "ifsp": 0,
+        "operationCode": "",
+        "operationAdscription": 700001770,
+        "operationAdscriptionName": "集团级",
+        "adjustBill": "",
+        "dealResultName": "满意"
+    },
+    "sheetPubInfo": {
+        "workSheetId": "0512200211313887",
+        "serviceOrderId": "ZX0512200210330515",
+        "regionId": 20,
+        "dealContent": "处理内容",
+        "month": 2
+    },
+    "labelInstance": []
+}

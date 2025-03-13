@@ -1,0 +1,18 @@
+---
+- name: init
+  include: init.yml
+
+- name: back
+  include: back.yml
+
+- name: copy
+  include: copy.yml
+
+- name: kill
+  include: kill.yml
+
+- name: run
+  include: run.yml
+
+- name: clean
+  include: clean.yml

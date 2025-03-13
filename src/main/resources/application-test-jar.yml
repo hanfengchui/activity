@@ -1,0 +1,153 @@
+server:
+  port: 12118
+  
+spring:
+  application:
+    name: custom-activiti
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 100MB
+      max-request-size: 100MB
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  #jscsc_ct_sheet
+  datasource-mysql:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://132.252.220.30:8921/jscsc_test_sheet?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull
+    username: jscsc_pub_protol
+    public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANFA5LgWT849Vj3iKDjhLPzw3+v28bqcV47J8XCK1qcTLSFrlsvqt8sr3dT8wXy4JWPHebConwOaj1KiukOF+8cCAwEAAQ==
+    enpassword: g44bea1qP77WtyUthm0i3uVYwY/+/Y+VJbHRW81PqqHAPX7/0Ij5rdN4IThMJb83XomRoJGM6WMD78y2BxOCYA==
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 25
+      auto-commit: true
+      idle-timeout: 300000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1200000
+      connection-timeout: 20000
+      connection-test-query: select now() from dual
+  #jscsc_ct_pub
+  jscsc-ct-pub: 
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://132.224.250.115:3308/jscsc_ct_sheet?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull
+    username: app_user
+    public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKTJJDn/oA5T58gqTJxEZdenzzkr09awLmih44DTZe2Xie+CK1/ZX5nKuu2dViHVtLmQ2+nxsSAqmkJitwn3nrsCAwEAAQ==
+    enpassword: lFAjL5zcgTejI8Aej9HLIKQHISGgeyn+TvxUNQJv+QBk1wk3o6lIR2xv/0RzhF3J8VyFA3FFc6dOqeikPYRy9A==
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari: 
+      minimum-idle: 5
+      maximum-pool-size: 12
+      auto-commit: true
+      idle-timeout: 300000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1200000
+      connection-timeout: 20000
+      connection-test-query: select now() from dual
+  #redis 配置
+  redis:
+    cluster:
+      nodes: 132.252.220.229:31046,132.252.220.230:31046
+    timeout: 10s # 连接超时时间
+    password: QQD_PRO_KFXT_DIC_RES#bmmVKVRji*6bIvQW
+    lettuce:
+      pool:
+        min-idle: 0 # 连接池中的最小空闲连接
+        max-idle: 8 # 连接池中的最大空闲连接
+        max-active: 8 # 连接池的最大数据库连接数
+        max-wait: -1ms #连接池最大阻塞等待时间（使用负值表示没有限制）
+        
+#ctg-cache
+ctg:
+  cacahe:
+    hostAndIp:
+      - host: 132.252.220.229
+        port: 31046
+      - host: 132.252.220.230
+        port: 31046
+    #最大连接数（空闲+使用中）
+    maxTotal: 150
+    #最大空闲连接数
+    maxIdle: 100
+    #保持的最小空闲连接数
+    minIdle: 10
+    #借出连接时最大的等待时间
+    maxWaitMillis: 3000
+    soTimeout: 3000
+    connectionTimeout: 5000
+    userAndPassword: QQD_PRO_KFXT_DIC_RES#bmmVKVRji*6bIvQW
+  flag: 1
+  
+#kafka
+custom:
+  logback:
+    kafka:
+      bootstrap-servers: 132.252.220.228:8422,132.252.220.226:8422,132.252.220.222:8422
+      topic: kf10000-order
+      
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌秘钥
+  secret: jsdxkfhijklmnopqrstuvwsdasdw
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
+ribbon:
+  ConnectTimeout: 10000            #连接超时10秒时间
+  ReadTimeout: 60000               #命令执行超时时间60秒
+  MaxAutoRetriesNextServer: 0      #最大重试次数(跳其它机器), 重试负载均衡其他的实例最大重试次数,不包括首次调用
+  MaxAutoRetries: 0                #最大重试次数 ,同一台实例最大重试次数,不包括首次调用
+  OkToRetryOnAllOperations: false  #是否所有操作都重试
+
+#feign客户端配置
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 1000000
+        read-timeout: 1000000
+        loggerLevel: basic
+  httpclient:
+    enabled: true
+    
+hystrix:
+  threadpool:
+    default:
+      coreSize: 200                      # 核心线程数,并发执行的最大线程数，默认10
+      maxQueueSize: 1000                 # BlockingQueue的最大队列数
+      queueSizeRejectionThreshold: 800   # 控制队列最大阈值,即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝，默认值5
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 1000000
+      circuitBreaker:
+        sleepWindowInMilliseconds: 1000000
+        forceClosed: true
+  shareSecurityContext: true
+  
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: '*'
+
+info:
+  app.name: 工作流
+  company.name: transfar
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$

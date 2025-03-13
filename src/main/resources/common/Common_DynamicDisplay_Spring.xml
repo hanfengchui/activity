@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="functionAmender__"
+		class="com.timesontransfar.common.framework.core.dynamicdisplay.service.impl.FunctionAmenderImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="sqlAnalyzer">
+			<ref bean="sqlAnalyzer" />
+		</property>
+		<property name="rowMapper">
+			<ref bean="webDisplayRowMapper" />
+		</property>
+		<property name="displayCtrlSql">
+			<value>
+				SELECT * FROM PUB_DISPLAY_CTRL A WHERE A.FUN_ID =? ORDER
+				BY POS_X,POS_Y
+			</value>
+		</property>
+		<property name="eventCtrlSql">
+			<value>
+				SELECT
+				PUB_DISPLAY_CTRL.CTRL_ID,PUB_EVENT.EVENT_ID,PUB_EVENT.EVENT_TYPE,PUB_EVENT.FUN_ID,PUB_EVENT.JAVACLASS,
+				PUB_EVENT.JAVA_BEAN,PUB_EVENT.METHOD,PUB_EVENT.JAVASCRIPT,PUB_EVENT.DISPLAYTYPE,PUB_EVENT.PAGE_ID,
+				PUB_EVENT.PERFORMTYPE FROM PUB_EVENT,PUB_DISPLAY_CTRL
+				WHERE PUB_DISPLAY_CTRL.FUN_ID=? AND
+				PUB_DISPLAY_CTRL.CTRL_ID = PUB_EVENT.CTRL_ID
+			</value>
+		</property>
+		<property name="constraintSql">
+			<value>
+				SELECT
+				PUB_DISPLAY_CTRL.CTRL_ID,PUB_CONSTRAINT.CONST_ID,PUB_CONSTRAINT.CONST_TYPE,PUB_CONSTRAINT.CONST_NAME,
+				PUB_CONSTRAINT.JAVACLASS,PUB_CONSTRAINT.JAVABEAN,PUB_CONSTRAINT.METHOD,PUB_CONSTRAINT.CONST_DESC
+				FROM
+				PUB_CONSTRAINT,PUB_DISPLAY_CTRL,PUB_CTRL_CONSTRAINT_RELA
+				WHERE PUB_DISPLAY_CTRL.FUN_ID=? AND
+				PUB_DISPLAY_CTRL.CTRL_ID =
+				PUB_CTRL_CONSTRAINT_RELA.CTRL_ID AND
+				PUB_CONSTRAINT.CONST_ID =
+				PUB_CTRL_CONSTRAINT_RELA.CONST_ID
+			</value>
+		</property>
+	</bean>
+
+	<bean id="webDynamicDisplay"
+		class="com.timesontransfar.common.framework.core.dynamicdisplay.service.impl.WebDynamicDisplayImpl">
+		<property name="systemAuthorization">
+			<ref bean="systemAuthorization" />
+		</property>
+		<property name="functionAmender">
+			<ref bean="functionAmender__"/>
+		</property>
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="sqlAnalyzer">
+			<ref bean="sqlAnalyzer" />
+		</property>
+		<property name="rowMapper">
+			<ref bean="webDisplayRowMapper" />
+		</property>
+		<property name="batchCount">
+			<value>10</value>
+		</property>
+		<property name="blackParameterList">
+			<list>
+				<value>WEB__PUB12_</value>
+			</list>
+		</property>
+		<property name="sqlUtil">
+			<ref bean="sqlUtil"/>
+		</property>
+	</bean>
+
+	<bean id="webDisplayRowMapper"
+		class="com.timesontransfar.common.framework.core.dynamicdisplay.model.WebDisplayRowMapper">
+		<property name="sqlUtil">
+			<ref bean="sqlUtil" />
+		</property>
+	</bean>
+
+	<bean id="sqlAnalyzer"
+		class="com.timesontransfar.common.analyzer.impl.SqlAnalyzerImpl">
+	</bean>
+	
+</beans>

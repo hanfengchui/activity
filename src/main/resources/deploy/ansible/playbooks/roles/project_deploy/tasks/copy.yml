@@ -1,0 +1,6 @@
+---
+
+- name: copy projectFile
+  synchronize: "src={{ local_file_path }} dest={{ file_path }}"
+
+- debug: msg="copy done"

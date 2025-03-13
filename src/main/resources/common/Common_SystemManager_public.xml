@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="authDaoRowMapper"
+		class="com.timesontransfar.common.authorization.model.service.AuthRowMapper">
+	</bean>
+	<bean id="constraintFactory"
+		class="com.timesontransfar.common.authorization.model.ConstraintFactory">
+	</bean>
+</beans>

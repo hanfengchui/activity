@@ -1,0 +1,24 @@
+---
+
+- name: register variable
+  shell: date -d"0 days ago" +"%Y%m%d%H%M%S"
+  register: bak_var
+  failed_when: bak_var.rc != 0
+
+- debug: msg="print {{ bak_var }}"
+
+- name: create backup dir
+  file: path={{ dest_file_path }}/backup/{{ project_name }}_{{ bak_var.stdout }} state=directory
+
+- name: judge a file or dir is exits
+  shell: ls {{ dest_file_path }}{{ project_name }}/
+  ignore_errors: True
+  register: result
+
+- debug: msg="print {{ result }}"
+
+- name: backup-mv bin file
+  shell: mv {{ dest_file_path }}/{{ project_name }}  {{ dest_file_path }}/backup/{{ project_name }}_{{ bak_var.stdout }}
+  when: result.rc==0
+
+- debug: msg="backup done"

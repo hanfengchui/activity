@@ -1,0 +1,37 @@
+---
+- name: add hosts in groups.run
+  hosts: localhost
+  gather_facts: False
+  vars_files:
+    - ../file_vars/{{ platform_name }}/common.yml
+
+  tasks:
+    - name: check platform_name.
+      fail:
+        msg: "platform_name is not empty.Please write ct_yun or ty_com_yun"
+      when: platform_name == ""
+
+    # - name: check env_name.
+    #   fail:
+    #     msg: "env_name is not empty.Please write test or pro or pre"
+    #   when: env_name == ""
+
+    - name: check project_name.
+      fail:
+        msg: "project_name is not empty.Like center-config"
+      when: project_name == ""
+
+    - name: add hosts in groups.run
+      add_host:
+        hostname: "{{ item.hostname }}"
+        common: "{{ common }}"
+        groups: run
+      with_items:
+        - "{{ run }}"
+
+- name: run project
+  hosts: run
+  gather_facts: False
+
+  roles:
+    - { role: project_deploy, project_name: '{{ project_name }}' }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <import resource="common/*.xml"/>
+	 
+	<import resource="customservice/WorkSheet_spring.xml"/>
+	<import resource="customservice/OrderAskInfoDao_spring.xml"/>
+	<import resource="customservice/Staff_skill_spring.xml"/>
+	<import resource="customservice/CS_Service_Content_Schema_Spring.xml"/>
+	
+	<!-- 新增   -->
+	<import resource="customservice/CS_Ts_Work_Sheet_Spring.xml"/>
+	<import resource="customservice/CS_Work_Sheet_Spring.xml"/>
+	
+</beans>

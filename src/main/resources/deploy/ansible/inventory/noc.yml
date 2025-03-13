@@ -1,0 +1,56 @@
+---
+all:
+  hosts:
+    cf50.noc:
+      ansible_host: 192.168.172.50
+    cf51.noc:
+      ansible_host: 192.168.172.51
+    cf52.noc:
+      ansible_host: 192.168.172.52
+    cf53.noc:
+      ansible_host: 192.168.172.53
+    cf54.noc:
+      ansible_host: 192.168.172.54
+    cf55.noc:
+      ansible_host: 192.168.172.55
+    cf56.noc:
+      ansible_host: 192.168.172.56
+    cf57.noc:
+      ansible_host: 192.168.172.57
+    cf58.noc:
+      ansible_host: 192.168.172.58
+    cf59.noc:
+      ansible_host: 192.168.172.59
+    cf60.noc:
+      ansible_host: 192.168.182.60
+    cf61.noc:
+      ansible_host: 192.168.182.61
+    cf62.noc:
+      ansible_host: 192.168.182.62
+    cf63.noc:
+      ansible_host: 192.168.182.63
+    cf64.noc:
+      ansible_host: 192.168.182.64
+    cf65.noc:
+      ansible_host: 192.168.182.65
+  children:
+    changlelu:
+      hosts:
+        cf50.noc:
+        cf51.noc:
+        cf52.noc:
+        cf53.noc:
+        cf54.noc:
+        cf55.noc:
+        cf56.noc:
+        cf57.noc:
+        cf58.noc:
+        cf59.noc:
+    erchang:
+      hosts:
+        cf60.noc:
+        cf61.noc:
+        cf62.noc:
+        cf63.noc:
+        cf64.noc:
+        cf65.noc:

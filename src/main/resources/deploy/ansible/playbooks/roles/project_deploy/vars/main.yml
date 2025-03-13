@@ -1,0 +1,10 @@
+---
+project_name: "common"
+#local_file_path: "../../../../../{{ project_name }}/target/{{ project_name }}.jar"
+local_file_path: "{{ deploy_home }}/{{ project_name }}"
+dest_file_path: "/install_jar/{{ platform_name }}_formal/{{ project_name }}/"
+file_path: "{{ dest_file_path }}" # 拷贝到指定目录下
+logs_path: "/install_jar/{{ platform_name }}_formal/{{ project_name }}.log"
+
+JAVA_OPTS: "-Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M"
+javaagent: "-javaagent:{{ common.aiopsagent_path }} -Dpinpoint.agentId={{ exclusive_address }}-{{ common.port }} -Dpinpoint.applicationName={{ common.project_tag }}{{ common.name }}  -Dpinpoint.licence={{ common.licence }}"

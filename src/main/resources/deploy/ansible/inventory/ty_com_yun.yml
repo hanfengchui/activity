@@ -1,0 +1,39 @@
+---
+all:
+  hosts:
+    cf141.com:
+      ansible_host: 132.252.220.141
+    cf15.com:
+      ansible_host: 132.252.220.15
+    cf129.com:
+      ansible_host: 132.252.220.129
+    cf139.com:
+      ansible_host: 132.252.220.139
+    cf154.com:
+      ansible_host: 132.252.220.154
+    cf156.com:
+      ansible_host: 132.252.220.156
+    cf168.com:
+      ansible_host: 132.252.220.168
+    cf183.com:
+      ansible_host: 132.252.220.183
+    cf106.com:
+      ansible_host: 132.252.220.106
+    cf118.com:
+      ansible_host: 132.252.220.118
+    cf20.com:
+      ansible_host: 132.252.220.20
+  children:
+    ty_com_yun:
+      hosts:
+        cf141.com:
+        cf15.com:
+        cf129.com:
+        cf139.com:
+        cf154.com:
+        cf156.com:
+        cf168.com:
+        cf183.com:
+        cf106.com:
+        cf118.com:
+        cf20.com:

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="keyGenerator" class="com.timesontransfar.common.database.impl.KeyGeneratorGuidImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate"/>
+		</property>
+		<property name="sqlOfMakeKey">
+			<value>SELECT replace(UUID(),'-','')</value>
+		</property>
+	</bean>
+	
+	<bean id="sqlUtil" class="com.timesontransfar.common.database.impl.CommonSqlUtilImpl">
+	</bean>
+	
+	<!--访问元数据-->
+	<bean id="accessMetaData" class="com.timesontransfar.common.metadata.impl.AccessMetaDataImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="getAttribute">
+			<value>SELECT A.ATTRIBUTE_ID,A.ATTR_NAME,A.RELA_TABLE_CODE,A.RELA_COL_CODE FROM PUB_ATTRIBUTE A</value>
+		</property>
+		<property name="getAllAttributeByCondition">
+			<value>SELECT A.ATTRIBUTE_ID,A.ATTR_NAME,A.RELA_TABLE_CODE,A.RELA_COL_CODE FROM PUB_ATTRIBUTE A WHERE A.ATTRIBUTE_ID IN (SELECT B.ATTRIBUTE_ID FROM TSM_CONDITION B)</value>
+		</property>
+		<property name="getAttributeInfo">
+			<value>SELECT A.ATTRIBUTE_ID,A.ATTR_NAME,A.RELA_TABLE_CODE,A.RELA_COL_CODE,A.IS_LOGIC,A.ENTITY_ID FROM PUB_ATTRIBUTE A WHERE A.ATTRIBUTE_ID = ?</value>
+		</property>
+		<property name="getTargetAttribute">
+			<value>SELECT A.TARGETATTRIBUTE_ID FROM PUB_ATTRIBUTEMAP A WHERE A.SOURCEATTRIBUTE_ID =?</value>
+		</property>
+	</bean>
+	
+	<!--权限因子访问-->
+	<bean id="authorizationGeneDAO" class="com.timesontransfar.common.authorization.service.impl.AuthorizationGeneDAO">
+		<property name="rowMapper">
+			<ref bean="authDaoRowMapper" />
+		</property>
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="allDataPermitGeneSql">
+			<value>
+				SELECT A.REST_COND_ID, A.ATTRIBUTE_ID, A.ISCOMMON, A.RELATION, A.CONDLEVEL, A.COND_VALUE, A.OPERATE_ID, A.OBJ_ID, (SELECT B.OBJ_NAME FROM PUB_OBJECT B WHERE B.OBJ_ID = A.OBJ_ID) AS OBJ_NAME, (SELECT C.ATTR_NAME FROM PUB_ATTRIBUTE C WHERE
+				C.ATTRIBUTE_ID = A.ATTRIBUTE_ID) AS ATTR_NAME, if(A.ISCOMMON=1, '0', (SELECT D.OPERTYPE FROM TSM_ROLE_DATAPERMIT_OPER D WHERE D.DATAOPERID = A.DATAROLEID)) AS OPERTYPE, A.DATAROLEID FROM TSM_CONDITION A WHERE A.ROLE_ID = ? ORDER BY
+				A.CONDLEVEL
+			</value>
+		</property>
+		<property name="allDataPermitSql">
+			<value>SELECT B.DATAPERMIT_RELA_ID,A.OBJ_ID,A.OPERTYPE,B.ISPRIVATE FROM TSM_ROLE_DATAPERMIT_OPER A,TSM_ROLE_DATAPERMIT_RELA B WHERE A.DATAOPERID=B.DATAOPERID AND A.STATE=1 AND B.ROLE_ID=?</value>
+		</property>
+	</bean>
+	
+	<!--员工权限工厂-->
+	<bean id="staffPermitFactory" class="com.timesontransfar.common.authorization.service.impl.StaffPermitFactory">
+	</bean>
+	
+	<!--系统授权-->
+	<bean id="systemAuthorization" class="com.timesontransfar.common.authorization.service.impl.SystemAuthorizationWas">
+		<property name="authorizationDAO">
+			<ref bean="authorizationDAO" />
+		</property>
+		<property name="authorizationGeneDAO">
+			<ref bean="authorizationGeneDAO" />
+		</property>
+		<property name="staffPermitFactory">
+			<ref bean="staffPermitFactory" />
+		</property>
+		<property name="sqlAnalyzer">
+			<ref bean="sqlAnalyzer" />
+		</property>
+		<property name="accessMetaData">
+			<ref bean="accessMetaData" />
+		</property>
+	</bean>
+	
+	<bean id="roleDAO" class="com.timesontransfar.common.authorization.role.impl.RoleDAOImpl">
+		<property name="systemAuthorization">
+			<ref bean="systemAuthorization" />
+		</property>
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="keyGen">
+			<ref bean="keyGenerator" />
+		</property>
+		<property name="sqlUpdateRole">
+			<value>
+				UPDATE TSM_ROLE SET ORG_ID=?,ROLE_NAME=?,ROLE_TYPE=?,STATE=?,ROLE_ORG=?, MODIFY_DATE=?,MODIFY_STAFF=?,EFFECT_DATE=TO_DATE(?,'YYYY-MM-DD'),EXPIRE_DATE=TO_DATE(?,'YYYY-MM-DD'), ROLE_REPORT_GRADE=?,ROLE_RULE_TYPE=?,BASE_FLAG=? WHERE ROLE_ID=?
+			</value>
+		</property>
+		<property name="sqlInsertCdt">
+			<value>INSERT INTO TSM_CONDITION(REST_COND_ID,ROLE_ID,OBJ_ID,ISCOMMON, DATAROLEID,ATTRIBUTE_ID,OPERATE_ID,COND_VALUE,RELATION,CONDLEVEL) VALUES(?,?,?,?,?,?,?,?,?,?)</value>
+		</property>
+		<property name="sqlDeleteCdt">
+			<value>DELETE FROM TSM_CONDITION WHERE ROLE_ID=?</value>
+		</property>
+		<property name="sqlDeleteDataRela">
+			<value>DELETE FROM TSM_ROLE_DATAPERMIT_RELA WHERE ROLE_ID=?</value>
+		</property>
+		<property name="sqlInsertFuncRela">
+			<value>INSERT INTO TSM_ROLE_FUNCOPR_RELA(FUNC_OPERATE_ID,ROLE_ID,ISPRIVATE) VALUES(?,?,?)</value>
+		</property>
+		<property name="sqlDeleteFuncRela">
+			<value>DELETE FROM TSM_ROLE_FUNCOPR_RELA WHERE ROLE_ID=?</value>
+		</property>
+		<property name="sqlInsertDataRela">
+			<value>INSERT INTO TSM_ROLE_DATAPERMIT_RELA(DATAPERMIT_RELA_ID,ROLE_ID,ISPRIVATE,DATAOPERID,ORG_STATE) VALUES(?,?,?,?,?)</value>
+		</property>
+		<!-- add by qliang 2006-08-02 -->
+		<property name="getOrgLinkIdByOrgIdSql">
+			<value>SELECT LINKID FROM TSM_ORGANIZATION WHERE ORG_ID=?</value>
+		</property>
+	</bean>
+	
+	<bean id="roleRowMapper" class="com.timesontransfar.common.authorization.role.impl.RoleRowMapper">
+	</bean>
+
+	<bean id="authOrgPersist" class="com.timesontransfar.common.authorization.service.impl.AuthOrgPersist">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="keyGenerator">
+			<ref bean="keyGenerator" />
+		</property>
+		<property name="authorizationDAO">
+			<ref bean="authorizationDAO" />
+		</property>
+
+		<property name="orgSql">
+			<value>SELECT A.*,B.LINK_ID FROM TSM_ORGANIZATION A, TRM_REGION B WHERE A.REGION_ID = B.REGION_ID AND A.ORG_ID = ?</value>
+		</property>
+		<property name="updateOrgSql">
+			<value>
+				UPDATE TSM_ORGANIZATION SET LINKID=?,ORG_NAME=?, PRINCIPAL=?,ORG_LEVEL=?,RELAPHONE=?,FUNCTIONTYPE=?,UP_ORG=?, ADDR_DESC=?, STATE=?,MODIFY_DATE=?,MODIFY_STAFF=?,AREACODE=?,REGION_ID=?,ORGANIZATION_TYPE=?,ORGOWNER=?,ORGFAX=?<!-- liangyong modify on 20061204-->
+				WHERE ORG_ID=?
+			</value>
+		</property>
+		<property name="insertOrgSql">
+			<value>
+				INSERT INTO TSM_ORGANIZATION(ORG_ID,LINKID,ORG_NAME,PRINCIPAL,ORG_LEVEL, RELAPHONE,FUNCTIONTYPE,UP_ORG,ADDR_DESC,STATE,CRE_DATE,CRE_STAFF, MODIFY_DATE,MODIFY_STAFF,AREACODE,REGION_ID,ORGANIZATION_TYPE,ORGOWNER,ORGFAX) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) <!-- liangyong modify on 20061204-->
+			</value>
+		</property>
+		<property name="deleteOrgSql">
+			<value>DELETE FROM TSM_ORGANIZATION WHERE ORG_ID=?</value>
+		</property>
+	</bean>
+
+	<bean id="authStaffPersist" class="com.timesontransfar.common.authorization.service.impl.AuthStaffPersist">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="keyGenerator">
+			<ref bean="keyGenerator" />
+		</property>
+		<property name="authorizationDAO">
+			<ref bean="authorizationDAO" />
+		</property>
+		<property name="deleteStaffSql">
+			<value>DELETE FROM TSM_STAFF WHERE STAFF_ID=?</value>
+		</property>
+		<property name="updateStaffSql">
+			<value>
+				UPDATE TSM_STAFF
+					SET STAFFNAME    = ?,
+					    ORG_ID       = ?,
+					    LOGONNAME    = ?,
+					    password     = ?,
+					    RELAPHONE    = ?,
+					    RELAEMAIL    = ?,
+					    GENDER       = ?,
+					    STAFF_LEVEL  = ?,
+					    MODIFY_DATE  = NOW(),
+					    MODIFY_STAFF = ?
+				WHERE STAFF_ID = ?
+			</value>
+		</property>
+		<property name="insertStaffSql">
+			<value>
+				INSERT INTO TSM_STAFF(STAFF_ID, GENDER, STAFF_LEVEL, LOGONNAME, STAFFNAME, ORG_ID, RELAEMAIL, RELAPHONE, STATE, PASSWORD, CRE_DATE, CRE_STAFF)
+  	 				 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?)
+			</value>
+		</property>
+		<property name="deleteStaffRoleRelaSql">
+			<value>DELETE FROM TSM_STAFF_ROLE_RELA WHERE STAFF_ID=?</value>
+		</property>
+	</bean>
+
+	<bean id="authRolePersist" class="com.timesontransfar.common.authorization.service.impl.AuthRolePersist">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="authorizationDAO">
+			<ref bean="authorizationDAO" />
+		</property>
+		<property name="pubFunc">
+			<ref bean="pubFunc" />
+		</property>
+		<property name="insertStaffRoleRelaSql">
+			<value>INSERT INTO TSM_STAFF_ROLE_RELA(STAFF_ID,ROLE_ID) VALUES(?,?)</value>
+		</property>
+		<property name="deleteStaffRoleRelaSql">
+			<value>DELETE FROM TSM_STAFF_ROLE_RELA WHERE STAFF_ID=?</value>
+		</property>
+	</bean>
+
+	<bean id="authorizationService" class="com.timesontransfar.common.authorization.service.impl.AuthorizationServiceImpl">
+		<property name="authorizationDAO">
+			<ref bean="authorizationDAO" />
+		</property>
+		<property name="staffPersist">
+			<ref bean="authStaffPersist" />
+		</property>
+		<property name="rolePersist">
+			<ref bean="authRolePersist" />
+		</property>
+	</bean>
+	
+	<bean id="authorizationServiceFacade" class="com.timesontransfar.common.authorization.service.impl.AuthorizationServiceFacade">
+	</bean>
+	
+	<bean id="authorizationDAO" class="com.timesontransfar.common.authorization.service.impl.AuthorizationDAOImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="staffSql">
+			<value>
+				SELECT A.STAFF_ID, A.STAFFNAME, A.ORG_ID, A.LOGONNAME, A.PASSWORD, A.DOMAIN_ACCOUNT,A.RELAPHONE, A.RELAEMAIL,A.GENDER, A.STAFF_LEVEL,A.CSS_STYLE, A.CRE_STAFF,DATE_FORMAT(A.CRE_DATE,'%Y-%m-%d %H:%i:%s') AS CRE_DATE,
+				A.MODIFY_STAFF,DATE_FORMAT(IFNULL(A.MODIFY_DATE,A.CRE_DATE),'%Y-%m-%d %H:%i:%s') AS MODIFY_DATE, A.WORKNO,A.STATE,A.LIMITDATE, IFNULL(A.EXP_DATE,'') AS EXP_DATE, A.IS_SSO,A.LOGIN_TIMES,DATE_FORMAT(A.STAFFSTART_DATE,'%Y-%m-%d %H:%i:%s') AS
+				STAFFSTART_DATE, DATE_FORMAT(A.STAFFEND_DATE,'%Y-%m-%d %H:%i:%s') AS STAFFEND_DATE,A.UNLOCKPASSWORD,A.ONEDAY_ENTER_SETTINGS,A.DUTY,A.FIGURE,A.SCOREDEGREE,A.BIRTHDAY,A.IDENTITY,A.WORKTIME,A.ADDRESS,
+				B.ORG_NAME,B.FUNCTIONTYPE,A.OPENPAGE FROM TSM_STAFF A, TSM_ORGANIZATION B WHERE A.ORG_ID = B.ORG_ID AND A.STAFF_ID = ?
+			</value>
+		</property>
+		<property name="orgSql">
+			<value>SELECT A.*,B.REGION_NAME,B.LINK_ID FROM TSM_ORGANIZATION A, TRM_REGION B WHERE A.REGION_ID = B.REGION_ID AND A.ORG_ID = ?</value>
+		</property>
+		<property name="childOrgSql">
+			<value>SELECT * FROM TSM_ORGANIZATION WHERE UP_ORG=?</value>
+		</property>
+		<property name="roleSql">
+			<value>SELECT * FROM TSM_ROLE WHERE ROLE_ID=?</value>
+		</property>
+		<property name="parentRoleSql">
+			<value>SELECT B.PARENT_ROLE_ID FROM TSM_ROLE A,TSM_ROLE_ROLE_RELA B WHERE A.ROLE_ID=B.ROLE_ID AND A.ROLE_ID=?</value>
+		</property>
+		<property name="childRoleSql">
+			<value>SELECT B.ROLE_ID FROM TSM_ROLE A,TSM_ROLE_ROLE_RELA B WHERE A.ROLE_ID=B.ROLE_ID AND B.PARENT_ROLE_ID=?</value>
+		</property>
+		<property name="roleDataPermitSql">
+			<value>SELECT B.DATAOPERID,B.ISPRIVATE FROM TSM_ROLE A,TSM_ROLE_DATAPERMIT_RELA B WHERE A.ROLE_ID=B.ROLE_ID AND A.ROLE_ID=?</value>
+		</property>
+		<property name="menuSql">
+			<value>SELECT * FROM TSM_MAINMENU WHERE MENU_ID=?  and func_interface_id = 1 </value>
+		</property>
+		<property name="parentMenuSql">
+			<value>SELECT B.TOP_MENU_ID FROM TSM_MAINMENU A,TSM_MENU_RELA B WHERE A.MENU_ID=B.MENU_ID AND A.MENU_ID=? and a.func_interface_id = 1  </value>
+		</property>
+		<property name="childMenuSql">
+			<value>SELECT B.MENU_ID FROM TSM_MAINMENU A,TSM_MENU_RELA B WHERE A.MENU_ID=B.MENU_ID AND B.TOP_MENU_ID=?  and a.func_interface_id = 1 order by A.menu_seq</value>
+		</property>
+	</bean>
+     
+</beans>

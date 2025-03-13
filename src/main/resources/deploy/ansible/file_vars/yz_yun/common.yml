@@ -1,0 +1,23 @@
+---
+common:
+  active: yzyun-jar
+  port: 12118
+  licence: "8321100029"
+  aiopsagent_path: "/aiopsagent/aiopsagent-1.8.0/aiopsagent-1.8.0.jar"
+  project_tag: "jscscYZjar"
+  name: "customactiviti"
+  flag: "1"
+
+run:
+  - hostname: cf13.yz
+  - hostname: cf14.yz
+  - hostname: cf15.yz
+  - hostname: cf16.yz
+  - hostname: cf17.yz
+  - hostname: cf18.yz
+  - hostname: cf28.yz
+  - hostname: cf29.yz
+  - hostname: cf30.yz
+  - hostname: cf31.yz
+  - hostname: cf32.yz
+  - hostname: cf33.yz

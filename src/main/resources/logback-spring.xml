@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	
+	<property name="LOG_FILE" value="logs/active.log" /> <!-- log目录 -->
+	
+	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss,CTT} %-5level [%thread] %logger{36}[%L] - %msg%n </pattern> 
+		</encoder>
+		<file>${LOG_FILE}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_FILE}.%d{yyyyMMdd}.%i</fileNamePattern> <!-- log文件名格式 -->
+			<maxHistory>30</maxHistory> <!-- 磁盘保留log文件最大个数 -->
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>512MB</maxFileSize> <!-- 单个log文件的最大文件大小 -->
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	
+	<conversionRule conversionWord="ip" converterClass="com.transfar.common.log.converter.IpConverter" />
+	<springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="default" />
+	<springProperty scope="context" name="springActive" source="spring.profiles.active" defaultValue="default" />
+	<springProperty scope="context" name="kafkaServers" source="custom.logback.kafka.bootstrap-servers" defaultValue="127.0.0.1:9092" />
+    <springProperty scope="context" name="kafkaTopic" source="custom.logback.kafka.topic" defaultValue="kf10000-order" />
+	<springProfile name="dev,test,prod,ctyun-jar,tycom-jar,yzyun-jar,yzyun-ccse,test-jar">
+		<!-- kafka的appender配置 -->
+		<appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        	<encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            	<providers>
+	                <timestamp>
+	                    <timeZone>CCT</timeZone>
+	                </timestamp>
+	                <pattern>
+	                    <pattern>
+	                        {
+	                        "createTime":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+	                        "host": "%ip",
+	                        "severity":"%level",
+	                        "service": "${springAppName}",
+	                        "runEnvName": "${springActive}",
+	                        "logonName": "%X{X-logonName}",
+	                        "logBean": "%X{X-logBean:-}",
+	                        "trace": "%X{X-B3-TraceId:-}",
+	                        "span": "%X{X-B3-SpanId:-}",
+	                        "thread": "%thread",
+	                        "stack_trace": "%exception{5}",
+	                        "rest": "%message",
+	                        "className": "%logger{40}",
+	                        "class": "%X{X-class}",
+	                        "methodName": "%X{X-method}",
+	                        "logType": "%X{X-logType}"
+	                        }
+	                    </pattern>
+	                </pattern>
+	            </providers>
+        	</encoder>
+	        <topic>${kafkaTopic}</topic>
+	        <!-- kafka 分区设置：主要考虑日志消息的顺序是否重要。 -->
+	        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy"/>
+	        <!-- 日志传输策略：主要 AsynchronousDeliveryStrategy 和BlockingDeliveryStrategy两种。 -->
+	        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>
+	        <!--注意此处应该是spring boot中的kafka配置属性-->
+	        <producerConfig>bootstrap.servers=${kafkaServers}</producerConfig>
+	        <producerConfig>acks=0</producerConfig>
+	        <producerConfig>linger.ms=1000</producerConfig>
+	        <producerConfig>max.block.ms=0</producerConfig>
+	        <producerConfig>client.id=${HOSTNAME}-${CONTEXT_NAME}-logback-relaxed</producerConfig>
+	    </appender>
+ 	</springProfile>
+ 	
+ 	<logger name="net.sf.json.JSONObject" level="OFF"> </logger>
+ 	
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLING" />
+		<springProfile name="dev,test,prod,ctyun-jar,tycom-jar,yzyun-jar,yzyun-ccse,test-jar">
+            <appender-ref ref="kafkaAppender" />
+        </springProfile>
+	</root>
+	
+</configuration>

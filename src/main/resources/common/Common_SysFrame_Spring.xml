@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!--新员工登陆判断 -->
+	<bean id="isLogin"
+		class="com.timesontransfar.common.web.system.impl.LoginImpl">
+		<property name="jdbcTemplate">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="systemAuthorization">
+			<ref bean="systemAuthorization" />
+		</property>
+	</bean>
+</beans>

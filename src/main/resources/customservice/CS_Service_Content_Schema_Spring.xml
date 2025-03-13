@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 工单质检 -->
+	<bean id="sheetCheckSchemDao"
+		class="com.timesontransfar.sheetCheck.dao.impl.SheetCheckSchemDao">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveSql">
+			<value>
+				INSERT INTO CC_SHEET_CHECK_SCHEM (SCHEM_ID, SCHEM_NAME,
+				UP_SCHEM_ID, ATTTIBUTE_ID, ATTTIBUTE_NAME, TYPE_ID,
+				TYPE_NAME, CONTENT_DESC) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			</value>
+		</property>
+		<property name="updateSql">
+			<value>
+				UPDATE CC_SHEET_CHECK_SCHEM SET SCHEM_ID = ?, SCHEM_NAME
+				= ?, UP_SCHEM_ID = ?, ATTTIBUTE_ID = ?, ATTTIBUTE_NAME =
+				?, TYPE_ID = ?, TYPE_NAME = ?, CONTENT_DESC = ? WHERE
+				SCHEM_ID = ?
+			</value>
+		</property>
+	</bean>
+	<bean id="sheetCheckDao"
+		class="com.timesontransfar.sheetCheck.dao.impl.SheetCheckDao">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveSql">
+			<value>
+				INSERT INTO CC_SHEET_CHECK (CHECK_ID, TYPE_ID,
+				TYPE_NAME, SERVICE_ORDER_ID, WORK_SHEET_ID,
+				CHECK_ORG_ID, CHECK_ORG_NAME, CHECK_STAFF_ID,
+				CHECK_STAFF_NAME, ORG_ID, ORG_NAME, STAFF_ID,
+				STAFF_NAME, CONTENT_DESC, EVALUSTE, CREAT_DATE ,
+				APPEAL_ORG_ID,APPEAL_ORG_NAME,APPEAL_STAFF_ID,
+				APPEAL_STAFF_NAME,APPEAL_DATA,APPEAL_CONTENT,
+				CHECK_STATE,CHECK_STATE_NAME,CHECK_EDITION,CHECK_OUT
+				,MORTAL_ERR,NOT_MORTAL_ERR
+				)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW()
+				,?,?,?,?, NOW() ,?,?,?,?,?
+				,?,?
+				) 
+				 
+			</value>
+		</property>
+	</bean>
+	<bean id="sheetCheckAdjuDao"
+		class="com.timesontransfar.sheetCheck.dao.impl.SheetCheckAdjuDao">
+		<property name="jt">
+			<ref bean="jdbcTemplate" />
+		</property>
+		<property name="saveSql">
+			<value>
+				insert into cc_sheet_check_adju (guid, check_id,
+				type_id, type_name, atttibute_id, atttibute_name,
+				schem_id, schem_name, content_desc, result,
+				exist_probliem, improme_opinion,check_edition) values
+				(replace(UUID(), '-', ''), ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?,?)
+			</value>
+		</property>
+	</bean>
+</beans>
